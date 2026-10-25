@@ -29,7 +29,7 @@ MySQL digunakan jika diperlukan pada pengembangan berikutnya.
 2. Buka terminal pada direktori tersebut.
 3. Jalankan perintah:
 
-   `git clone URL_REPOSITORY`
+   `git clone https://github.com/Sizaaa/spk-beasiswa-ahp-waspas.git`
 
 4. Masuk ke folder proyek:
 

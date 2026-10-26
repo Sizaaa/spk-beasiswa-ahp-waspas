@@ -1,48 +1,76 @@
 
 <?php
-// Menu navigasi website SPK Beasiswa
+// Navbar Website SPK Beasiswa
 // Kelompok 4 - Universitas Pamulang
-// Menu digunakan bersama di setiap halaman
+
+// Mengetahui halaman yang sedang dibuka
+$halamanAktif = basename($_SERVER["SCRIPT_NAME"]);
+
+// Daftar menu website
+$menu = [
+    ["nama" => "Beranda", "file" => "index.php"],
+    ["nama" => "Pendahuluan", "file" => "pendahuluan.php"],
+    ["nama" => "Tinjauan Pustaka", "file" => "tinjauan-pustaka.php"],
+    ["nama" => "Metode", "file" => "metode.php"],
+    ["nama" => "Hasil", "file" => "hasil.php"],
+    ["nama" => "Kalkulator AHP", "file" => "ahp.php"],
+    ["nama" => "Simulasi WASPAS", "file" => "simulasi.php"],
+    ["nama" => "Daftar Pustaka", "file" => "daftar-pustaka.php"]
+];
+
+// Alamat dasar website di Laragon
+$alamatWebsite = "/spk-beasiswa-ahp-waspas/";
 ?>
 
-<!-- Bagian menu navigasi -->
+<!-- Menu navigasi website -->
 <nav class="bg-white shadow">
 
-    <div class="max-w-4xl mx-auto px-6 py-4">
+    <div class="max-w-5xl mx-auto px-6 py-4">
 
-        <!-- Daftar menu website -->
-        <div class="flex flex-wrap gap-4 text-sm">
+        <div class="flex flex-wrap items-center gap-5 text-sm">
 
-            <!-- Menu Beranda sudah tersedia -->
-            <a href="/spk-beasiswa-ahp-waspas/"
-               class="text-blue-900 font-bold hover:underline">
-                Beranda
-            </a>
+            <?php foreach ($menu as $item): ?>
 
-            <!-- Menu berikutnya belum memiliki halaman -->
-            <span class="text-gray-500">
-                Pendahuluan
-            </span>
+                <?php
+                // Memeriksa apakah file halaman sudah tersedia
+                $tersedia = file_exists(
+                    __DIR__ . "/../" . $item["file"]
+                );
 
-            <span class="text-gray-500">
-                Tinjauan Pustaka
-            </span>
+                // Memeriksa apakah menu sedang aktif
+                $aktif = $halamanAktif === $item["file"];
 
-            <span class="text-gray-500">
-                Metode
-            </span>
+                // Membuat alamat tujuan menu
+                $alamatMenu = $alamatWebsite . $item["file"];
+                ?>
 
-            <span class="text-gray-500">
-                Hasil
-            </span>
+                <?php if ($tersedia): ?>
 
-            <span class="text-gray-500">
-                Simulasi
-            </span>
+                    <!-- Menu yang bisa diklik -->
+                    <a
+                        href="<?= htmlspecialchars($alamatMenu); ?>"
+                        class="<?=
+                            $aktif
+                            ? 'text-blue-900 font-bold border-b-2 border-blue-900 pb-1'
+                            : 'text-gray-700 hover:text-blue-900 hover:underline'
+                        ?>"
+                    >
+                        <?= htmlspecialchars($item["nama"]); ?>
+                    </a>
 
-            <span class="text-gray-500">
-                Daftar Pustaka
-            </span>
+                <?php else: ?>
+
+                    <!-- Menu yang halamannya belum tersedia -->
+                    <span
+                        class="text-gray-400 cursor-not-allowed"
+                        title="Halaman belum tersedia"
+                    >
+                        <?= htmlspecialchars($item["nama"]); ?>
+                    </span>
+
+                <?php endif; ?>
+
+            <?php endforeach; ?>
 
         </div>
 

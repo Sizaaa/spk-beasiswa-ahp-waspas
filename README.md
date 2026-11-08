@@ -1,58 +1,421 @@
-<p align="center"><a href="https://laravel.com" target="_blank"><img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="400" alt="Laravel Logo"></a></p>
+﻿# Beasiswa Cerdas
+## Panduan Instalasi, Menjalankan Website, dan Kolaborasi GitHub
 
-<p align="center">
-<a href="https://github.com/laravel/framework/actions"><img src="https://github.com/laravel/framework/workflows/tests/badge.svg" alt="Build Status"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/dt/laravel/framework" alt="Total Downloads"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/v/laravel/framework" alt="Latest Stable Version"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/l/laravel/framework" alt="License"></a>
-</p>
+Repository ini berisi source code website **Beasiswa Cerdas**, sebuah Sistem Pendukung Keputusan penerima beasiswa kurang mampu menggunakan metode AHP dan WASPAS.
 
-## About Laravel
+Website dibangun menggunakan **Laravel 13, PHP, MySQL, Blade, CSS, dan JavaScript**.
 
-Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable and creative experience to be truly fulfilling. Laravel takes the pain out of development by easing common tasks used in many web projects, such as:
+Panduan ini ditujukan untuk anggota Kelompok 4 dan pengembang yang ingin mengambil proyek, menjalankannya di komputer lokal, serta bekerja sama melalui GitHub.
 
-- [Simple, fast routing engine](https://laravel.com/docs/routing).
-- [Powerful dependency injection container](https://laravel.com/docs/container).
-- Multiple back-ends for [session](https://laravel.com/docs/session) and [cache](https://laravel.com/docs/cache) storage.
-- Expressive, intuitive [database ORM](https://laravel.com/docs/eloquent).
-- Database agnostic [schema migrations](https://laravel.com/docs/migrations).
-- [Robust background job processing](https://laravel.com/docs/queues).
-- [Real-time event broadcasting](https://laravel.com/docs/broadcasting).
+**Repository:** https://github.com/Sizaaa/spk-beasiswa-ahp-waspas
 
-Laravel is accessible, powerful, and provides tools required for large, robust applications.
+---
 
-## Learning Laravel
+## 1. Aplikasi yang Harus Diinstal
 
-Laravel has the most extensive and thorough [documentation](https://laravel.com/docs) and video tutorial library of all modern web application frameworks, making it a breeze to get started with the framework.
+Sebelum menjalankan proyek, siapkan aplikasi berikut:
 
-In addition, [Laracasts](https://laracasts.com) contains thousands of video tutorials on a range of topics including Laravel, modern PHP, unit testing, and JavaScript. Boost your skills by digging into our comprehensive video library.
+| Aplikasi | Fungsi | Link |
+|---|---|---|
+| Git | Mengambil dan mengirim kode | https://git-scm.com |
+| Laragon | Server PHP dan MySQL lokal | https://laragon.org |
+| PHP 8.3 atau lebih baru | Menjalankan Laravel 13 | https://www.php.net |
+| Composer | Menginstal dependensi Laravel | https://getcomposer.org |
+| Node.js dan npm | Mengelola aset frontend | https://nodejs.org |
+| VS Code | Mengedit kode website | https://code.visualstudio.com |
 
-You can also watch bite-sized lessons with real-world projects on [Laravel Learn](https://laravel.com/learn), where you will be guided through building a Laravel application from scratch while learning PHP fundamentals.
+Buka PowerShell dan periksa instalasi:
 
-## Agentic Development
+    git --version
+    php -v
+    composer --version
+    node -v
+    npm -v
 
-Laravel's predictable structure and conventions make it ideal for AI coding agents like Claude Code, Cursor, and GitHub Copilot. Install [Laravel Boost](https://laravel.com/docs/ai) to supercharge your AI workflow:
+Jika versi masing-masing aplikasi muncul, berarti terminal sudah mengenalinya.
 
-```bash
-composer require laravel/boost --dev
+---
 
-php artisan boost:install
-```
+## 2. Cara Mengambil Proyek dari GitHub (Clone)
 
-Boost provides your agent 15+ tools and skills that help agents build Laravel applications while following best practices.
+Clone dilakukan ketika pertama kali mengambil proyek.
 
-## Contributing
+**Langkah 1:** Buka Laragon dan jalankan MySQL.
 
-Thank you for considering contributing to the Laravel framework! The contribution guide can be found in the [Laravel documentation](https://laravel.com/docs/contributions).
+**Langkah 2:** Buka PowerShell.
 
-## Code of Conduct
+Masuk ke folder Laragon:
 
-In order to ensure that the Laravel community is welcoming to all, please review and abide by the [Code of Conduct](https://laravel.com/docs/contributions#code-of-conduct).
+    cd C:\laragon\www
 
-## Security Vulnerabilities
+**Langkah 3:** Clone repository:
 
-If you discover a security vulnerability within Laravel, please send an e-mail to Taylor Otwell via [taylor@laravel.com](mailto:taylor@laravel.com). All security vulnerabilities will be promptly addressed.
+    git clone https://github.com/Sizaaa/spk-beasiswa-ahp-waspas.git
 
-## License
+**Langkah 4:** Masuk ke folder proyek:
 
-The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
+    cd spk-beasiswa-ahp-waspas
+
+**Langkah 5:** Buka proyek menggunakan VS Code:
+
+    code .
+
+Jika perintah `code` tidak dikenali, buka VS Code lalu pilih File > Open Folder.
+
+PENTING: Clone hanya dilakukan sekali. Untuk mengambil perubahan terbaru, gunakan `git pull`.
+
+---
+
+## 3. Cara Menginstal Dependensi Laravel
+
+Pastikan terminal berada di folder proyek.
+
+Instal dependensi PHP:
+
+    composer install
+
+Instal dependensi frontend:
+
+    npm install
+
+Folder `vendor` dan `node_modules` dibuat secara lokal dan tidak perlu diunggah ke GitHub.
+
+---
+
+## 4. Cara Mengatur File .env
+
+Setelah clone, buat file environment lokal.
+
+Pada PowerShell:
+
+    Copy-Item .env.example .env
+
+Kemudian jalankan:
+
+    php artisan key:generate
+
+Buka file `.env` dan sesuaikan database:
+
+    APP_NAME="Beasiswa Cerdas"
+    APP_ENV=local
+    APP_DEBUG=true
+    APP_URL=http://127.0.0.1:8000
+
+    DB_CONNECTION=mysql
+    DB_HOST=127.0.0.1
+    DB_PORT=3306
+    DB_DATABASE=spk_beasiswa
+    DB_USERNAME=root
+    DB_PASSWORD=
+
+Gunakan username dan password MySQL sesuai komputer masing-masing.
+
+Jangan pernah mengunggah file `.env` ke GitHub.
+
+---
+
+## 5. Cara Menyiapkan Database
+
+1. Jalankan MySQL melalui Laragon.
+2. Buka pengelola database.
+3. Buat database bernama `spk_beasiswa`.
+4. Sesuaikan konfigurasi `.env`.
+5. Periksa migrasi dalam folder `database/migrations`.
+
+Jika migrasi sudah lengkap dan sesuai dengan struktur proyek, jalankan:
+
+    php artisan migrate
+
+PERHATIAN:
+
+- Jangan menggunakan `php artisan migrate:fresh` pada database berisi data penting.
+- Database pribadi dan dokumen pendaftar tidak tersedia dalam repository publik.
+- Jika struktur database atau data awal belum tersedia, hubungi pengelola proyek.
+- Clone tidak otomatis menyediakan akun administrator.
+
+---
+
+## 6. Cara Menjalankan Website
+
+Pastikan dependensi sudah diinstal dan database sudah dikonfigurasi.
+
+Jika direktori storage belum tersedia, buat menggunakan PowerShell:
+
+    New-Item -ItemType Directory -Force storage\framework\cache\data, storage\framework\sessions, storage\framework\views, storage\logs, bootstrap\cache
+
+Siapkan tautan penyimpanan:
+
+    php artisan storage:link
+
+Bangun aset frontend:
+
+    npm run build
+
+Bersihkan cache:
+
+    php artisan optimize:clear
+
+Jalankan Laravel:
+
+    php artisan serve
+
+Buka website di browser:
+
+http://127.0.0.1:8000
+
+Terminal `php artisan serve` perlu tetap terbuka selama website digunakan.
+
+---
+
+## 7. Cara Mengambil Update Terbaru (Git Pull)
+
+Jika proyek sudah pernah di-clone, jangan clone ulang.
+
+Buka terminal di folder proyek:
+
+    cd C:\laragon\www\spk-beasiswa-ahp-waspas
+
+Periksa perubahan lokal:
+
+    git status
+
+Pastikan pekerjaan lokal sudah disimpan atau di-commit.
+
+Pindah ke branch utama:
+
+    git switch main
+
+Ambil perubahan terbaru:
+
+    git pull origin main
+
+Jika ada pembaruan dependensi, jalankan:
+
+    composer install
+    npm install
+    npm run build
+    php artisan optimize:clear
+
+Periksa migrasi jika ada perubahan database.
+
+---
+
+## 8. Cara Membuat Branch untuk Pekerjaan Baru
+
+Untuk bekerja secara berkelompok, sebaiknya gunakan branch terpisah.
+
+Perbarui branch utama:
+
+    git switch main
+    git pull origin main
+
+Buat branch baru:
+
+    git switch -c fitur/perbaikan-dashboard
+
+Contoh nama branch lain:
+
+- `fitur/pengajuan-beasiswa`
+- `fitur/perhitungan-ahp`
+- `fitur/laporan`
+- `perbaikan/tampilan-user`
+
+Gunakan nama sesuai pekerjaan.
+
+---
+
+## 9. Cara Menyimpan Perubahan (Git Commit)
+
+Setelah mengedit file menggunakan VS Code:
+
+**Periksa perubahan:**
+
+    git status
+
+**Tambahkan file:**
+
+    git add .
+
+Atau tambahkan file tertentu:
+
+    git add resources/views/admin/dashboard.blade.php
+
+**Simpan commit:**
+
+    git commit -m "Perbaikan tampilan dashboard admin"
+
+Gunakan pesan commit yang menjelaskan perubahan.
+
+Jangan memasukkan file `.env`, dokumen pribadi, atau data database ke staging.
+
+---
+
+## 10. Cara Mengirim Perubahan ke GitHub (Git Push)
+
+Untuk mengunggah branch baru:
+
+    git push -u origin fitur/perbaikan-dashboard
+
+Sesuaikan nama branch.
+
+Jika branch sudah pernah di-push:
+
+    git push
+
+Periksa branch yang sedang digunakan:
+
+    git branch --show-current
+
+Jangan menggunakan `git push --force` tanpa persetujuan pengelola proyek.
+
+---
+
+## 11. Cara Membuat Pull Request
+
+Setelah branch berhasil di-push:
+
+1. Buka https://github.com/Sizaaa/spk-beasiswa-ahp-waspas
+2. Pilih branch pekerjaan.
+3. Klik **Compare & pull request**.
+4. Pastikan tujuan penggabungan adalah `main`.
+5. Isi judul dan deskripsi perubahan.
+6. Klik **Create pull request**.
+7. Tunggu pemeriksaan sebelum perubahan digabungkan.
+
+---
+
+## 12. Cara Mengambil Perubahan Anggota Lain
+
+Setelah pekerjaan anggota lain digabungkan ke `main`:
+
+    git switch main
+    git pull origin main
+
+Jika ingin memasukkan pembaruan `main` ke branch pekerjaan sendiri:
+
+    git switch fitur/perbaikan-dashboard
+    git merge main
+
+Pastikan pekerjaan sudah disimpan sebelum melakukan merge.
+
+Jika terjadi konflik, periksa file yang bermasalah sebelum melanjutkan.
+
+---
+
+## 13. Cara Menguji Website
+
+Jalankan pengujian Laravel:
+
+    php artisan test
+
+Jalankan pemeriksaan final:
+
+    php artisan beasiswa:final-check
+
+Jika tersedia, jalankan pemeriksaan navigasi:
+
+    php scripts/cek-navigasi.php
+
+Periksa juga fungsi website langsung di browser sebelum mengirim perubahan.
+
+---
+
+## 14. Solusi Kesalahan yang Sering Terjadi
+
+### GitHub Tidak Bisa Diakses
+
+Jika muncul:
+
+    Could not resolve host: github.com
+
+Periksa koneksi internet, DNS, proxy/VPN, dan coba buka GitHub melalui browser.
+
+### Composer Tidak Dikenali
+
+Periksa pemasangan Composer dan PHP:
+
+    composer --version
+    php -v
+
+### Folder vendor Tidak Ada
+
+Jalankan:
+
+    composer install
+
+### APP_KEY Belum Ada
+
+Jalankan:
+
+    php artisan key:generate
+
+### Database Tidak Terhubung
+
+Periksa MySQL pada Laragon dan pengaturan database pada `.env`.
+
+Kemudian jalankan:
+
+    php artisan optimize:clear
+
+### Tampilan CSS Tidak Muncul
+
+Jalankan:
+
+    npm install
+    npm run build
+
+Kemudian tekan Ctrl + F5 pada browser.
+
+### Git Push Ditolak
+
+Periksa autentikasi, izin repository, branch aktif, dan perubahan terbaru pada GitHub.
+
+Jangan langsung menggunakan `git push --force`.
+
+---
+
+## 15. Ringkasan Perintah Git
+
+| Perintah | Keterangan |
+|---|---|
+| `git clone URL` | Mengambil proyek pertama kali |
+| `git status` | Memeriksa perubahan |
+| `git switch main` | Berpindah ke branch utama |
+| `git pull origin main` | Mengambil update |
+| `git switch -c nama-branch` | Membuat branch |
+| `git add .` | Menambahkan perubahan |
+| `git commit -m "pesan"` | Menyimpan commit lokal |
+| `git push` | Mengirim perubahan ke GitHub |
+| `git branch --show-current` | Melihat branch aktif |
+| `git log --oneline` | Melihat riwayat commit |
+
+---
+
+## 16. Aturan Kerja Kelompok
+
+1. Selalu mengambil update sebelum mengerjakan fitur.
+2. Gunakan branch terpisah untuk pekerjaan baru.
+3. Periksa perubahan sebelum commit.
+4. Jangan mengunggah file `.env`.
+5. Jangan mengunggah data pribadi atau dokumen siswa.
+6. Jangan mengunggah folder `vendor` atau `node_modules`.
+7. Jalankan pengujian sebelum mengirim perubahan.
+8. Jangan mengubah fitur anggota lain tanpa koordinasi.
+9. Buat Pull Request sebelum menggabungkan pekerjaan.
+10. Pastikan perhitungan AHP dan WASPAS tidak terganggu.
+
+---
+
+## 17. Tim Pengembang
+
+**Kelompok 4 — Universitas Pamulang**
+
+- Bagas Dwi Prasojo
+- Muhammad Azis
+- Muhammad Asyhadullah
+
+---
+
+**Catatan:** GitHub digunakan untuk menyimpan kode sumber. Untuk menjalankan website Laravel secara online, diperlukan hosting yang mendukung PHP dan MySQL.
+
+**Beasiswa Cerdas — Laravel 13, AHP dan WASPAS**

@@ -3,6 +3,103 @@
 
 @section('title', 'Login - Beasiswa Cerdas')
 
+{{-- =========================================
+     PENGATURAN KHUSUS HALAMAN LOGIN
+
+     Footer global hanya disembunyikan
+     pada halaman Login.
+
+     Tombol ikon mata dibuat sederhana,
+     tanpa tampilan tombol berwarna.
+========================================== --}}
+
+@push('styles')
+<style>
+    body > footer {
+        display: none !important;
+    }
+
+    .bc-login-eye-button {
+        position: absolute;
+        top: 50%;
+        right: 14px;
+        transform: translateY(-50%);
+
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+
+        width: 36px;
+        height: 36px;
+
+        padding: 0 !important;
+        margin: 0;
+
+        border: none !important;
+        border-radius: 9px;
+
+        background: transparent !important;
+        box-shadow: none !important;
+
+        color: #64748b !important;
+        cursor: pointer;
+
+        transition:
+            color 0.2s ease,
+            background-color 0.2s ease;
+    }
+
+    .bc-login-eye-button:hover {
+        color: #116759 !important;
+        background: #ecfdf5 !important;
+    }
+
+    .bc-login-eye-button:focus-visible {
+        outline: 2px solid #116759;
+        outline-offset: 2px;
+    }
+
+    .bc-login-eye-button svg {
+        width: 21px;
+        height: 21px;
+        fill: none;
+        stroke: currentColor;
+        stroke-width: 1.8;
+        stroke-linecap: round;
+        stroke-linejoin: round;
+    }
+
+    .bc-login-eye-button .bc-eye-hidden {
+        display: none;
+    }
+
+    .bc-login-forgot {
+        display: flex;
+        justify-content: flex-end;
+        margin-top: 11px;
+    }
+
+    .bc-login-forgot a {
+        color: #116759;
+        font-size: 13px;
+        font-weight: 700;
+        text-decoration: none;
+        transition: color 0.2s ease;
+    }
+
+    .bc-login-forgot a:hover {
+        color: #0e5247;
+        text-decoration: underline;
+    }
+
+    .bc-login-forgot a:focus-visible {
+        outline: 2px solid #116759;
+        outline-offset: 4px;
+        border-radius: 3px;
+    }
+</style>
+@endpush
+
 @section('content')
 
 <!-- ==========================================
@@ -13,6 +110,7 @@
     class="border-b border-emerald-100
            bg-white"
 >
+
     <div
         class="mx-auto flex max-w-6xl
                flex-wrap items-center
@@ -33,8 +131,9 @@
             class="inline-flex items-center gap-2
                    rounded-xl border
                    border-emerald-100
-                   px-4 py-2 text-sm
-                   font-semibold text-[#116759]
+                   px-4 py-2
+                   text-sm font-semibold
+                   text-[#116759]
                    transition hover:bg-emerald-50"
         >
             <span aria-hidden="true">←</span>
@@ -42,6 +141,7 @@
         </a>
 
     </div>
+
 </header>
 
 <!-- ==========================================
@@ -72,6 +172,8 @@
         aria-hidden="true"
     ></div>
 
+    <!-- KARTU UTAMA LOGIN -->
+
     <div
         class="relative mx-auto grid
                w-full max-w-5xl
@@ -84,7 +186,7 @@
 
         <!-- ==================================
              INFORMASI SISTEM
-             SEBELAH KIRI PADA DESKTOP
+             KOLOM KIRI
         =================================== -->
 
         <aside
@@ -95,6 +197,8 @@
                    sm:p-10 lg:p-12"
         >
 
+            <!-- DEKORASI -->
+
             <div
                 class="pointer-events-none absolute
                        -right-16 -top-16
@@ -102,6 +206,8 @@
                        border border-white/10"
                 aria-hidden="true"
             ></div>
+
+            <!-- SAMBUTAN -->
 
             <div class="relative">
 
@@ -114,6 +220,7 @@
                            text-emerald-100"
                 >
                     <span aria-hidden="true">✦</span>
+
                     PORTAL BEASISWA CERDAS
                 </div>
 
@@ -140,7 +247,11 @@
 
             </div>
 
+            <!-- INFORMASI FITUR -->
+
             <div class="relative space-y-4">
+
+                <!-- PENGAJUAN TERPANTAU -->
 
                 <div
                     class="flex items-start gap-3
@@ -148,6 +259,7 @@
                            border-white/10
                            bg-white/10 p-4"
                 >
+
                     <span
                         class="flex h-10 w-10
                                shrink-0 items-center
@@ -159,6 +271,7 @@
                     </span>
 
                     <div>
+
                         <p class="text-sm font-bold">
                             Pengajuan Terpantau
                         </p>
@@ -171,8 +284,12 @@
                             pemeriksaan administrasi
                             dalam satu portal.
                         </p>
+
                     </div>
+
                 </div>
+
+                <!-- HASIL SELEKSI -->
 
                 <div
                     class="flex items-start gap-3
@@ -180,6 +297,7 @@
                            border-white/10
                            bg-white/10 p-4"
                 >
+
                     <span
                         class="flex h-10 w-10
                                shrink-0 items-center
@@ -191,6 +309,7 @@
                     </span>
 
                     <div>
+
                         <p class="text-sm font-bold">
                             Hasil Seleksi Transparan
                         </p>
@@ -202,17 +321,23 @@
                             Keputusan akhir ditampilkan
                             setelah diumumkan oleh Admin.
                         </p>
+
                     </div>
+
                 </div>
 
             </div>
+
+            <!-- IDENTITAS KELOMPOK -->
 
             <p
                 class="relative text-xs
                        leading-6 text-emerald-200"
             >
                 Beasiswa Cerdas · Kelompok 4
+
                 <span class="mx-1">·</span>
+
                 Universitas Pamulang
             </p>
 
@@ -220,7 +345,7 @@
 
         <!-- ==================================
              FORM LOGIN
-             SEBELAH KANAN
+             KOLOM KANAN
         =================================== -->
 
         <section
@@ -230,7 +355,7 @@
             aria-labelledby="judul-login"
         >
 
-            <!-- IDENTITAS FORM -->
+            <!-- JUDUL FORM -->
 
             <div>
 
@@ -266,7 +391,9 @@
 
             </div>
 
-            <!-- PESAN SUKSES -->
+            <!-- ==================================
+                 PESAN SUKSES
+            =================================== -->
 
             @if (session('sukses'))
 
@@ -283,7 +410,9 @@
 
             @endif
 
-            <!-- AKUN SUDAH LOGIN -->
+            <!-- ==================================
+                 INFORMASI AKUN SUDAH LOGIN
+            =================================== -->
 
             @auth
 
@@ -294,6 +423,7 @@
                            text-sm leading-7
                            text-blue-900"
                 >
+
                     Kamu sedang login sebagai
 
                     <strong>
@@ -305,11 +435,14 @@
                         Kamu dapat memasukkan
                         akun lain untuk berganti akun.
                     </p>
+
                 </div>
 
             @endauth
 
-            <!-- PESAN ERROR -->
+            <!-- ==================================
+                 PESAN ERROR LOGIN
+            =================================== -->
 
             @if ($errors->any())
 
@@ -327,7 +460,7 @@
             @endif
 
             <!-- ==================================
-                 FORM LOGIN LAMA DIPERTAHANKAN
+                 FORM LOGIN
             =================================== -->
 
             <form
@@ -335,9 +468,10 @@
                 action="{{ route('login.proses') }}"
                 class="mt-7 space-y-5"
             >
+
                 @csrf
 
-                <!-- USERNAME / EMAIL -->
+                <!-- USERNAME ATAU EMAIL -->
 
                 <div>
 
@@ -374,36 +508,22 @@
 
                 </div>
 
-                <!-- PASSWORD -->
+                <!-- ==================================
+                     KATA SANDI
+                =================================== -->
 
                 <div>
 
-                    <div
-                        class="mb-2 flex flex-wrap
-                               items-center
-                               justify-between gap-2"
+                    <label
+                        for="password"
+                        class="mb-2 block
+                               text-sm font-bold
+                               text-slate-700"
                     >
+                        Kata Sandi
+                    </label>
 
-                        <label
-                            for="password"
-                            class="text-sm font-bold
-                                   text-slate-700"
-                        >
-                            Kata Sandi
-                        </label>
-
-                        <!-- FITUR BARU -->
-
-                        <a
-                            href="{{ route('password.forgot') }}"
-                            class="text-xs font-bold
-                                   text-[#116759]
-                                   hover:underline"
-                        >
-                            Lupa Kata Sandi?
-                        </a>
-
-                    </div>
+                    <!-- INPUT PASSWORD + IKON MATA -->
 
                     <div class="relative">
 
@@ -417,7 +537,7 @@
                             class="w-full rounded-xl
                                    border border-slate-300
                                    bg-white px-4 py-3.5
-                                   pr-24 text-sm
+                                   pr-16 text-sm
                                    text-slate-800
                                    outline-none transition
                                    placeholder:text-slate-400
@@ -426,27 +546,91 @@
                                    focus:ring-emerald-100"
                         >
 
+                        <!--
+                            IKON MATA SAJA
+
+                            Saat password tersembunyi:
+                            ikon mata biasa.
+
+                            Saat password terlihat:
+                            ikon mata dicoret.
+                        -->
+
                         <button
                             type="button"
                             id="toggle-password"
+                            class="bc-login-eye-button"
                             aria-label="Tampilkan kata sandi"
+                            aria-controls="password"
                             aria-pressed="false"
-                            class="absolute right-2
-                                   top-1/2 -translate-y-1/2
-                                   rounded-lg px-3 py-2
-                                   text-xs font-bold
-                                   text-[#116759]
-                                   transition
-                                   hover:bg-emerald-50"
+                            title="Tampilkan kata sandi"
                         >
-                            Lihat
+
+                            <!-- IKON MATA TERBUKA -->
+
+                            <svg
+                                id="icon-eye-open"
+                                xmlns="http://www.w3.org/2000/svg"
+                                viewBox="0 0 24 24"
+                                aria-hidden="true"
+                            >
+                                <path
+                                    d="M2.062 12.348a1 1 0 0 1 0-.696 10.75 10.75 0 0 1 19.876 0 1 1 0 0 1 0 .696 10.75 10.75 0 0 1-19.876 0"
+                                />
+
+                                <circle
+                                    cx="12"
+                                    cy="12"
+                                    r="3"
+                                />
+                            </svg>
+
+                            <!-- IKON MATA DICORET -->
+
+                            <svg
+                                id="icon-eye-closed"
+                                class="bc-eye-hidden"
+                                xmlns="http://www.w3.org/2000/svg"
+                                viewBox="0 0 24 24"
+                                aria-hidden="true"
+                            >
+                                <path
+                                    d="M10.733 5.076a10.744 10.744 0 0 1 11.205 6.575 1 1 0 0 1 0 .696 10.8 10.8 0 0 1-3.173 4.073"
+                                />
+
+                                <path
+                                    d="M14.084 14.158a3 3 0 0 1-4.242-4.242"
+                                />
+
+                                <path
+                                    d="M17.479 17.499A10.75 10.75 0 0 1 2.062 12.35a1 1 0 0 1 0-.7 10.7 10.7 0 0 1 4.446-5.143"
+                                />
+
+                                <path d="m2 2 20 20" />
+                            </svg>
+
                         </button>
+
+                    </div>
+
+                    <!-- ==================================
+                         LUPA KATA SANDI
+                         DIPINDAHKAN KE BAWAH INPUT
+                    =================================== -->
+
+                    <div class="bc-login-forgot">
+
+                        <a
+                            href="{{ route('password.forgot') }}"
+                        >
+                            Lupa Kata Sandi?
+                        </a>
 
                     </div>
 
                 </div>
 
-                <!-- TOMBOL MASUK -->
+                <!-- TOMBOL LOGIN -->
 
                 <button
                     type="submit"
@@ -469,7 +653,9 @@
 
             </form>
 
-            <!-- REGISTRASI -->
+            <!-- ==================================
+                 REGISTRASI USER
+            =================================== -->
 
             <div
                 class="mt-8 border-t
@@ -500,7 +686,9 @@
 
             </div>
 
-            <!-- LOGOUT JIKA SUDAH LOGIN -->
+            <!-- ==================================
+                 LOGOUT JIKA SUDAH LOGIN
+            =================================== -->
 
             @auth
 
@@ -509,6 +697,7 @@
                     action="{{ route('logout') }}"
                     class="mt-5 text-center"
                 >
+
                     @csrf
 
                     <button
@@ -518,6 +707,7 @@
                     >
                         Logout akun saat ini
                     </button>
+
                 </form>
 
             @endauth
@@ -530,24 +720,73 @@
 
 @endsection
 
+<!-- ==========================================
+     JAVASCRIPT IKON MATA
+========================================== -->
+
 @push('scripts')
 <script>
 document.addEventListener('DOMContentLoaded', function () {
     'use strict';
 
-    const password = document.getElementById('password');
-    const toggle = document.getElementById('toggle-password');
+    const password = document.getElementById(
+        'password'
+    );
 
-    if (!password || !toggle) {
+    const toggle = document.getElementById(
+        'toggle-password'
+    );
+
+    const iconEyeOpen = document.getElementById(
+        'icon-eye-open'
+    );
+
+    const iconEyeClosed = document.getElementById(
+        'icon-eye-closed'
+    );
+
+    if (
+        !password ||
+        !toggle ||
+        !iconEyeOpen ||
+        !iconEyeClosed
+    ) {
         return;
     }
 
     toggle.addEventListener('click', function () {
+
         const tampil = password.type === 'password';
 
-        password.type = tampil ? 'text' : 'password';
-        toggle.textContent = tampil ? 'Sembunyikan' : 'Lihat';
+        // Mengubah jenis input.
+        password.type = tampil
+            ? 'text'
+            : 'password';
 
+        // Saat password terlihat,
+        // gunakan ikon mata dicoret.
+        if (tampil) {
+
+            iconEyeOpen.classList.add(
+                'bc-eye-hidden'
+            );
+
+            iconEyeClosed.classList.remove(
+                'bc-eye-hidden'
+            );
+
+        } else {
+
+            iconEyeOpen.classList.remove(
+                'bc-eye-hidden'
+            );
+
+            iconEyeClosed.classList.add(
+                'bc-eye-hidden'
+            );
+        }
+
+        // Aksesibilitas tombol.
         toggle.setAttribute(
             'aria-pressed',
             tampil ? 'true' : 'false'
@@ -559,7 +798,16 @@ document.addEventListener('DOMContentLoaded', function () {
                 ? 'Sembunyikan kata sandi'
                 : 'Tampilkan kata sandi'
         );
+
+        toggle.setAttribute(
+            'title',
+            tampil
+                ? 'Sembunyikan kata sandi'
+                : 'Tampilkan kata sandi'
+        );
+
     });
+
 });
 </script>
 @endpush

@@ -6,112 +6,58 @@
 @section('content')
 
 @php
-    // Nama akun yang sedang login
     $namaUser = $akun->nama_lengkap
         ?: $akun->username;
 @endphp
 
-<!-- =====================================
-     NAVBAR USER
-===================================== -->
+<!-- ==========================================
+     DASHBOARD USER BEASISWA CERDAS
+========================================== -->
 
-<header class="bg-white border-b border-emerald-100">
+<main class="mx-auto max-w-6xl px-5 py-9">
 
-    <div class="max-w-6xl mx-auto px-5 py-5
-                flex flex-wrap items-center
-                justify-between gap-4">
+    <!-- ======================================
+         SAMBUTAN USER
+    ======================================= -->
 
-        <!-- LOGO -->
-        <a
-            href="{{ route('user.dashboard') }}"
-            class="text-xl font-extrabold text-[#105447]"
+    <section
+        class="rounded-3xl bg-[#103F36]
+               p-8 text-white"
+    >
+
+        <div
+            class="flex flex-wrap items-center
+                   justify-between gap-6"
         >
-            ✦ Beasiswa Cerdas
 
-            <span class="block text-xs font-normal
-                         text-slate-500">
-                Portal User
-            </span>
-        </a>
-
-        <!-- MENU -->
-        <nav class="flex flex-wrap gap-5
-                    items-center text-sm font-semibold">
-
-            <a
-                href="{{ route('user.dashboard') }}"
-                class="text-emerald-700"
-            >
-                Dashboard
-            </a>
-
-            <a
-                href="#berkas"
-                class="text-slate-600 hover:text-emerald-700"
-            >
-                Status Berkas
-            </a>
-
-            <a
-                href="#pengumuman"
-                class="text-slate-600 hover:text-emerald-700"
-            >
-                Pengumuman
-            </a>
-
-            <form
-                method="POST"
-                action="{{ route('logout') }}"
-            >
-                @csrf
-
-                <button
-                    type="submit"
-                    class="rounded-xl bg-red-50
-                           px-4 py-2 text-red-700"
-                >
-                    Logout
-                </button>
-
-            </form>
-
-        </nav>
-
-    </div>
-
-</header>
-
-<!-- =====================================
-     KONTEN DASHBOARD
-===================================== -->
-
-<main class="max-w-6xl mx-auto px-5 py-9">
-
-    <!-- SAMBUTAN -->
-    <section class="bg-[#103F36]
-                    rounded-3xl p-8 text-white">
-
-        <div class="flex flex-wrap justify-between
-                    items-center gap-6">
-
-            <div>
+            <div class="min-w-0 flex-1">
 
                 <p class="text-sm text-emerald-200">
                     Selamat datang,
                 </p>
 
-                <h1 class="text-3xl font-extrabold mt-2">
+                <h1
+                    class="mt-2 break-words
+                           text-3xl font-extrabold"
+                >
                     {{ $namaUser }}
                 </h1>
 
-                <p class="text-sm text-emerald-100 mt-4">
-                    Pantau status pengajuan beasiswa
+                <p
+                    class="mt-4 text-sm leading-7
+                           text-emerald-100"
+                >
+                    Pantau pengajuan, proses seleksi,
+                    dan keputusan akhir beasiswa
                     milik akunmu di sini.
                 </p>
 
-                @if ($pengajuan && $pengajuan->nisn)
+                @if (
+                    $pengajuan &&
+                    $pengajuan->nisn
+                )
 
-                    <p class="text-xs text-emerald-200 mt-3">
+                    <p class="mt-3 text-xs text-emerald-200">
                         NISN: {{ $pengajuan->nisn }}
                     </p>
 
@@ -119,23 +65,58 @@
 
             </div>
 
-            <!-- STATUS TERBARU -->
-            <div class="bg-white/10 border border-white/20
-                        rounded-2xl p-5 w-full sm:w-72">
+            <!-- STATUS ADMINISTRASI -->
 
-                <p class="text-xs font-semibold
-                          text-emerald-200">
-                    STATUS PENGAJUAN
+            <div
+                class="w-full rounded-2xl
+                       border border-white/20
+                       bg-white/10 p-5 sm:w-72"
+            >
+
+                <p
+                    class="text-xs font-semibold
+                           text-emerald-200"
+                >
+                    STATUS ADMINISTRASI
                 </p>
 
-                <h2 class="text-xl font-extrabold mt-2">
+                <h2
+                    class="mt-2 text-xl font-extrabold"
+                >
                     {{ $infoStatus['judul'] }}
                 </h2>
 
-                <p class="text-sm text-emerald-100
-                          leading-6 mt-3">
+                <p
+                    class="mt-3 text-sm leading-6
+                           text-emerald-100"
+                >
                     {{ $infoStatus['keterangan'] }}
                 </p>
+
+                @if ($sudahDiumumkan)
+
+                    <div
+                        class="mt-4 rounded-xl
+                               bg-white/15 p-3"
+                    >
+
+                        <p
+                            class="text-xs font-semibold
+                                   text-emerald-200"
+                        >
+                            HASIL AKHIR SELEKSI
+                        </p>
+
+                        <p
+                            class="mt-1 text-lg
+                                   font-extrabold"
+                        >
+                            {{ $infoKeputusan['judul'] }}
+                        </p>
+
+                    </div>
+
+                @endif
 
             </div>
 
@@ -143,73 +124,103 @@
 
     </section>
 
-    <!-- =====================================
-         RINGKASAN DATA
-    ===================================== -->
+    <!-- ======================================
+         RINGKASAN PENGAJUAN
+    ======================================= -->
 
-    <section class="grid md:grid-cols-3
-                    gap-5 mt-7">
+    <section
+        class="mt-7 grid gap-5 md:grid-cols-3"
+    >
 
-        <!-- STATUS -->
-        <div class="bg-white border border-slate-100
-                    rounded-2xl p-6 shadow-sm">
+        <!-- STATUS ADMINISTRASI -->
+
+        <div
+            class="rounded-2xl border
+                   border-slate-100 bg-white
+                   p-6 shadow-sm"
+        >
 
             <p class="text-sm text-slate-500">
                 Status Saat Ini
             </p>
 
             <span
-                class="inline-block rounded-full
-                       px-4 py-2 text-sm font-bold mt-4
+                class="mt-4 inline-block
+                       rounded-full px-4 py-2
+                       text-sm font-bold
                        {{ $infoStatus['warna'] }}"
             >
                 {{ $infoStatus['judul'] }}
             </span>
 
-            <p class="text-xs text-slate-500 mt-4">
-                Status sesuai data pengajuan di MySQL.
+            <p
+                class="mt-4 text-xs leading-6
+                       text-slate-500"
+            >
+                Status administrasi sesuai data
+                pengajuan yang tersimpan.
             </p>
 
         </div>
 
-        <!-- JUMLAH DOKUMEN -->
-        <div class="bg-white border border-slate-100
-                    rounded-2xl p-6 shadow-sm">
+        <!-- DOKUMEN WAJIB -->
+
+        <div
+            class="rounded-2xl border
+                   border-slate-100 bg-white
+                   p-6 shadow-sm"
+        >
 
             <p class="text-sm text-slate-500">
                 Dokumen Wajib Tersimpan
             </p>
 
-            <h3 class="text-3xl font-extrabold
-                       text-[#103F36] mt-4">
+            <h3
+                class="mt-4 text-3xl font-extrabold
+                       text-[#103F36]"
+            >
                 {{ $jumlahTerunggah }}
                 /
                 {{ $jumlahWajib }}
             </h3>
 
-            <p class="text-xs text-slate-500 mt-4">
+            <p
+                class="mt-4 text-xs leading-6
+                       text-slate-500"
+            >
                 Berkas tersimpan belum tentu
                 lolos pemeriksaan Admin.
             </p>
 
         </div>
 
-        <!-- TANGGAL -->
-        <div class="bg-white border border-slate-100
-                    rounded-2xl p-6 shadow-sm">
+        <!-- TANGGAL PENGIRIMAN -->
+
+        <div
+            class="rounded-2xl border
+                   border-slate-100 bg-white
+                   p-6 shadow-sm"
+        >
 
             <p class="text-sm text-slate-500">
                 Tanggal Pengiriman
             </p>
 
-            <h3 class="text-lg font-bold
-                       text-[#103F36] mt-4">
+            <h3
+                class="mt-4 text-lg font-bold
+                       text-[#103F36]"
+            >
 
-                @if ($pengajuan && $pengajuan->diajukan_pada)
+                @if (
+                    $pengajuan &&
+                    $pengajuan->diajukan_pada
+                )
 
                     {{ date(
                         'd-m-Y H:i',
-                        strtotime($pengajuan->diajukan_pada)
+                        strtotime(
+                            $pengajuan->diajukan_pada
+                        )
                     ) }}
 
                 @else
@@ -220,7 +231,10 @@
 
             </h3>
 
-            <p class="text-xs text-slate-500 mt-4">
+            <p
+                class="mt-4 text-xs leading-6
+                       text-slate-500"
+            >
                 Dicatat saat pendaftaran dikirim.
             </p>
 
@@ -228,54 +242,144 @@
 
     </section>
 
-    <!-- =====================================
-         TAHAPAN DAN INFORMASI PENGAJUAN
-    ===================================== -->
+    <!-- ======================================
+         TAHAPAN SELEKSI DAN PENGAJUAN SAYA
+    ======================================= -->
 
-    <section class="grid lg:grid-cols-2
-                    gap-6 mt-8">
+    <!--
+        PERBAIKAN TATA LETAK:
 
-        <!-- TAHAPAN SELEKSI -->
-        <div class="bg-white border border-slate-100
-                    rounded-2xl p-7 shadow-sm">
+        items-start membuat kedua kartu
+        mengikuti tinggi kontennya masing-masing.
 
-            <h2 class="text-xl font-extrabold
-                       text-[#103F36]">
+        Dengan demikian, tidak ada ruang kosong
+        besar akibat tinggi kartu yang dipaksakan.
+    -->
+
+    <section
+        class="mt-8 grid items-start
+               gap-6 lg:grid-cols-2"
+    >
+
+        <!-- ==================================
+             KARTU KIRI: TAHAPAN SELEKSI
+        =================================== -->
+
+        <div
+            class="self-start rounded-2xl
+                   border border-slate-100
+                   bg-white p-7 shadow-sm"
+        >
+
+            <h2
+                class="text-xl font-extrabold
+                       text-[#103F36]"
+            >
                 Tahapan Seleksi
             </h2>
 
-            <p class="text-sm text-slate-500 mt-2">
-                Tahapan berdasarkan status
-                pengajuan yang tersimpan.
+            <p
+                class="mt-2 text-sm leading-7
+                       text-slate-500"
+            >
+                Perkembangan seleksi mengikuti
+                pemeriksaan administrasi dan
+                keputusan akhir yang diumumkan Admin.
             </p>
 
-            <div class="space-y-6 mt-7">
+            <div class="mt-7 space-y-6">
 
-                @foreach ($tahapan as $nomor => $tahap)
+                @foreach (
+                    $tahapan as $nomor => $tahap
+                )
 
-                    <div class="flex items-start gap-4">
+                    @php
+                        $selesaiTahap = (bool) (
+                            $tahap['selesai'] ?? false
+                        );
 
-                        <div class="w-10 h-10 shrink-0
-                                    rounded-full flex
-                                    items-center justify-center
-                                    font-bold
-                                    {{ $nomor === 0
-                                       ? 'bg-[#116759] text-white'
-                                       : 'bg-slate-100 text-slate-600' }}">
+                        $tahapHasil = (bool) (
+                            $tahap['hasil'] ?? false
+                        );
 
-                            {{ $nomor === 0
+                        $warnaLingkaran = $selesaiTahap
+                            ? 'bg-[#116759] text-white'
+                            : 'bg-slate-100 text-slate-600';
+
+                        $warnaStatus = $selesaiTahap
+                            ? 'text-emerald-700'
+                            : 'text-slate-500';
+
+                        if ($tahapHasil) {
+
+                            $warnaStatus = match (
+                                $keputusanFinal
+                            ) {
+                                'diterima' =>
+                                    'text-emerald-700',
+
+                                'cadangan' =>
+                                    'text-amber-700',
+
+                                'tidak_diterima' =>
+                                    'text-rose-700',
+
+                                default =>
+                                    'text-slate-500',
+                            };
+
+                            $warnaLingkaran = match (
+                                $keputusanFinal
+                            ) {
+                                'diterima' =>
+                                    'bg-emerald-700 text-white',
+
+                                'cadangan' =>
+                                    'bg-amber-500 text-white',
+
+                                'tidak_diterima' =>
+                                    'bg-rose-600 text-white',
+
+                                default =>
+                                    'bg-slate-100 text-slate-600',
+                            };
+                        }
+                    @endphp
+
+                    <div
+                        class="flex items-start gap-4"
+                    >
+
+                        <!-- INDIKATOR TAHAP -->
+
+                        <div
+                            class="flex h-10 w-10 shrink-0
+                                   items-center justify-center
+                                   rounded-full font-bold
+                                   {{ $warnaLingkaran }}"
+                            aria-hidden="true"
+                        >
+                            {{ $selesaiTahap
                                 ? '✓'
                                 : $nomor + 1 }}
-
                         </div>
 
-                        <div>
+                        <!-- INFORMASI TAHAP -->
 
-                            <p class="font-semibold text-slate-800">
+                        <div class="min-w-0 flex-1">
+
+                            <p
+                                class="font-semibold
+                                       text-slate-800"
+                            >
                                 {{ $tahap['nama'] }}
                             </p>
 
-                            <p class="text-sm text-slate-500 mt-1">
+                            <p
+                                class="mt-1 text-sm
+                                       font-medium
+                                       {{ $warnaStatus }}"
+                            >
                                 {{ $tahap['status'] }}
                             </p>
 
@@ -287,75 +391,236 @@
 
             </div>
 
+            <!--
+                KEPUTUSAN AKHIR TIDAK DIULANG
+                LAGI DI KARTU INI.
+
+                Hasil akhir tetap terlihat
+                pada langkah Pengumuman penerima.
+
+                Rincian keputusan ditempatkan
+                pada kartu Pengajuan Saya
+                di sebelah kanan.
+            -->
+
+            <!-- BELUM ADA PENGUMUMAN -->
+
+            @if (
+                !$sudahDiumumkan &&
+                $status === 'terverifikasi'
+            )
+
+                <div
+                    class="mt-7 rounded-xl
+                           border border-emerald-200
+                           bg-emerald-50 p-4"
+                >
+
+                    <p
+                        class="text-sm font-bold
+                               text-emerald-900"
+                    >
+                        Administrasi Sudah Terverifikasi
+                    </p>
+
+                    <p
+                        class="mt-2 text-sm leading-7
+                               text-emerald-800"
+                    >
+                        Pengajuan sudah lolos pemeriksaan
+                        administrasi.
+
+                        Selanjutnya, tunggu pengumuman
+                        keputusan akhir dari Admin.
+                    </p>
+
+                </div>
+
+            @endif
+
         </div>
 
-        <!-- PENGAJUAN SAYA -->
-        <div class="bg-white border border-slate-100
-                    rounded-2xl p-7 shadow-sm">
+        <!-- ==================================
+             KARTU KANAN: PENGAJUAN SAYA
+        =================================== -->
 
-            <h2 class="text-xl font-extrabold
-                       text-[#103F36]">
+        <div
+            class="self-start rounded-2xl
+                   border border-slate-100
+                   bg-white p-7 shadow-sm"
+        >
+
+            <h2
+                class="text-xl font-extrabold
+                       text-[#103F36]"
+            >
                 Pengajuan Saya
             </h2>
 
-            <p class="text-sm leading-7
-                      text-slate-600 mt-4">
+            <p
+                class="mt-4 text-sm leading-7
+                       text-slate-600"
+            >
                 {{ $infoStatus['keterangan'] }}
             </p>
 
             <!-- INFORMASI AKUN -->
-            <div class="bg-slate-50 rounded-xl
-                        p-5 mt-6 space-y-3 text-sm">
+
+            <div
+                class="mt-6 space-y-3
+                       rounded-xl bg-slate-50
+                       p-5 text-sm"
+            >
 
                 <div>
+
                     <p class="text-xs text-slate-500">
                         Username
                     </p>
 
-                    <p class="font-bold mt-1">
+                    <p class="mt-1 font-bold">
                         {{ $akun->username }}
                     </p>
+
                 </div>
 
                 <div>
+
                     <p class="text-xs text-slate-500">
                         Email
                     </p>
 
-                    <p class="font-bold mt-1 break-words">
-                        {{ $akun->email ?: 'Belum tersedia' }}
+                    <p
+                        class="mt-1 break-words font-bold"
+                    >
+                        {{ $akun->email
+                            ?: 'Belum tersedia' }}
                     </p>
+
                 </div>
 
                 @if ($pengajuan)
 
                     <div>
+
                         <p class="text-xs text-slate-500">
                             Asal Sekolah
                         </p>
 
-                        <p class="font-bold mt-1">
-                            {{ $pengajuan->asal_sekolah ?: '-' }}
+                        <p class="mt-1 font-bold">
+                            {{ $pengajuan->asal_sekolah
+                                ?: '-' }}
                         </p>
+
                     </div>
 
                 @endif
 
             </div>
 
-            <!-- CATATAN ADMIN -->
-            @if ($pengajuan && $pengajuan->catatan_admin)
+            <!-- ==================================
+                 KEPUTUSAN AKHIR BEASISWA
+                 CUKUP SATU KARTU DI SINI
+            =================================== -->
 
-                <div class="bg-amber-50 border
-                            border-amber-200
-                            rounded-xl p-5 mt-6">
+            @if ($sudahDiumumkan)
 
-                    <p class="font-bold text-amber-900">
+                <div
+                    class="mt-6 rounded-xl border
+                           p-5
+                           {{ $infoKeputusan['warnaPanel'] }}"
+                >
+
+                    <p
+                        class="text-xs font-semibold
+                               uppercase tracking-wide"
+                    >
+                        Keputusan Akhir Beasiswa
+                    </p>
+
+                    <div
+                        class="mt-3 flex flex-wrap
+                               items-center gap-3"
+                    >
+
+                        <div
+                            class="flex h-11 w-11
+                                   shrink-0 items-center
+                                   justify-center rounded-full
+                                   bg-white/70 text-xl
+                                   font-extrabold"
+                            aria-hidden="true"
+                        >
+                            @if ($keputusanFinal === 'diterima')
+                                ✓
+                            @elseif ($keputusanFinal === 'cadangan')
+                                ◷
+                            @else
+                                !
+                            @endif
+                        </div>
+
+                        <h3
+                            class="text-xl font-extrabold"
+                        >
+                            {{ $infoKeputusan['judul'] }}
+                        </h3>
+
+                    </div>
+
+                    <p
+                        class="mt-4 text-sm leading-7"
+                    >
+                        {{ $infoKeputusan['keterangan'] }}
+                    </p>
+
+                    <div
+                        class="mt-5 border-t
+                               border-current/15 pt-4"
+                    >
+
+                        <a
+                            href="{{ route('user.status') }}"
+                            class="inline-flex items-center
+                                   justify-center rounded-xl
+                                   border border-current/40
+                                   bg-white/70 px-4 py-2.5
+                                   text-sm font-bold
+                                   transition hover:bg-white"
+                        >
+                            Lihat Status Pengajuan
+                        </a>
+
+                    </div>
+
+                </div>
+
+            @endif
+
+            <!-- CATATAN DARI ADMIN -->
+
+            @if (
+                $pengajuan &&
+                $pengajuan->catatan_admin
+            )
+
+                <div
+                    class="mt-6 rounded-xl border
+                           border-amber-200
+                           bg-amber-50 p-5"
+                >
+
+                    <p
+                        class="font-bold text-amber-900"
+                    >
                         Catatan Admin
                     </p>
 
-                    <p class="text-sm text-amber-900
-                              leading-7 mt-3 whitespace-pre-wrap">
+                    <p
+                        class="mt-3 whitespace-pre-wrap
+                               text-sm leading-7
+                               text-amber-900"
+                    >
                         {{ $pengajuan->catatan_admin }}
                     </p>
 
@@ -363,54 +628,40 @@
 
             @elseif ($status === 'diajukan')
 
-                <p class="text-xs text-slate-500 mt-6">
+                <p
+                    class="mt-6 text-xs text-slate-500"
+                >
                     Belum ada catatan pemeriksaan
                     dari Admin.
                 </p>
 
             @endif
 
-            <!-- FORMULIR BELUM DIPINDAHKAN -->
-            <div class="bg-amber-50 border
-                        border-amber-200
-                        rounded-xl p-5 mt-6">
-
-                <p class="font-bold text-amber-900">
-                    Formulir Laravel
-                </p>
-
-                <p class="text-sm text-amber-900
-                          leading-7 mt-2">
-
-                    Fitur mengisi dan memperbaiki
-                    formulir masih dalam proses
-                    migrasi ke Laravel.
-
-                    Data pengajuan yang sudah
-                    tersimpan tetap aman dan
-                    dapat dilihat di dashboard ini.
-
-                </p>
-
-            </div>
-
         </div>
 
     </section>
 
-    <!-- =====================================
-         DAFTAR DOKUMEN
-    ===================================== -->
+    <!-- ======================================
+         BERKAS PENGAJUAN
+         TIDAK DIUBAH
+    ======================================= -->
 
-    <section id="berkas"
-             class="bg-white border border-slate-100
-                    rounded-2xl p-7 shadow-sm mt-8">
+    <section
+        id="berkas"
+        class="mt-8 rounded-2xl
+               border border-slate-100
+               bg-white p-7 shadow-sm"
+    >
 
-        <div class="flex flex-wrap justify-between
-                    gap-3 items-center">
+        <div
+            class="flex flex-wrap items-center
+                   justify-between gap-3"
+        >
 
-            <h2 class="text-xl font-extrabold
-                       text-[#103F36]">
+            <h2
+                class="text-xl font-extrabold
+                       text-[#103F36]"
+            >
                 Berkas Pengajuan
             </h2>
 
@@ -420,13 +671,19 @@
 
         </div>
 
-        <div class="grid md:grid-cols-2 gap-4 mt-6">
+        <div
+            class="mt-6 grid gap-4 md:grid-cols-2"
+        >
 
-            @foreach ($dokumen as $jenis => $item)
+            @foreach (
+                $dokumen as $jenis => $item
+            )
 
-                <div class="bg-slate-50 rounded-xl p-5
-                            flex flex-wrap justify-between
-                            items-center gap-4">
+                <div
+                    class="flex flex-wrap items-center
+                           justify-between gap-4
+                           rounded-xl bg-slate-50 p-5"
+                >
 
                     <div>
 
@@ -436,33 +693,44 @@
 
                         @if ($item['ada'])
 
-                            <p class="text-xs text-emerald-700 mt-2">
+                            <p
+                                class="mt-2 text-xs
+                                       text-emerald-700"
+                            >
                                 ✓ Tersimpan
                             </p>
 
                         @else
 
-                            <p class="text-xs text-slate-500 mt-2">
+                            <p
+                                class="mt-2 text-xs
+                                       text-slate-500"
+                            >
                                 Belum ada berkas
                             </p>
 
                         @endif
 
-                        <p class="text-xs text-slate-500 mt-1">
-
+                        <p
+                            class="mt-1 text-xs
+                                   text-slate-500"
+                        >
                             {{ $item['wajib']
                                 ? 'Dokumen wajib'
                                 : 'Dokumen opsional' }}
-
                         </p>
 
                     </div>
 
-                    <!-- UNDUH MELALUI LARAVEL -->
+                    <!-- UNDUH BERKAS -->
+
                     @if ($item['ada'])
 
                         <a
-                            href="{{ route('user.berkas', ['jenis' => $jenis]) }}"
+                            href="{{ route(
+                                'user.berkas',
+                                ['jenis' => $jenis]
+                            ) }}"
                             class="text-sm font-bold
                                    text-emerald-700 underline"
                         >
@@ -477,49 +745,147 @@
 
         </div>
 
-        <p class="text-xs text-slate-500 mt-5
-                  leading-6">
-
+        <p
+            class="mt-5 text-xs leading-6
+                   text-slate-500"
+        >
             Dokumen yang tersedia dapat diunduh
             menggunakan sesi Laravel milikmu.
+
             Dokumen pengguna lain tidak dapat
             diakses melalui halaman ini.
-
         </p>
 
     </section>
 
-    <!-- =====================================
-         PENGUMUMAN
-    ===================================== -->
+    <!-- ======================================
+         PENGUMUMAN HASIL SELEKSI
+         TIDAK DIUBAH
+    ======================================= -->
 
-    <section id="pengumuman"
-             class="bg-[#E8F5F0] border
-                    border-emerald-100 rounded-2xl
-                    p-7 mt-8">
+    <section
+        id="pengumuman"
+        class="mt-8 rounded-2xl
+               border border-emerald-100
+               bg-[#E8F5F0] p-7"
+    >
 
-        <h2 class="text-xl font-extrabold
-                   text-[#103F36]">
+        <h2
+            class="text-xl font-extrabold
+                   text-[#103F36]"
+        >
             Pengumuman Hasil Seleksi
         </h2>
 
-        <p class="text-sm text-slate-600
-                  leading-7 mt-4">
+        <!-- HASIL SUDAH DIUMUMKAN -->
 
-            Hasil akhir seleksi beasiswa
-            belum diumumkan melalui portal ini.
+        @if ($sudahDiumumkan)
 
-            Status
+            <div
+                class="mt-5 rounded-xl border p-5
+                       {{ $infoKeputusan['warnaPanel'] }}"
+            >
 
-            <strong>{{ $infoStatus['judul'] }}</strong>
+                <p
+                    class="text-xs font-bold
+                           uppercase tracking-wide"
+                >
+                    Keputusan Akhir Resmi
+                </p>
 
-            bukan keputusan akhir penerimaan.
+                <h3
+                    class="mt-2 text-2xl
+                           font-extrabold"
+                >
+                    {{ $infoKeputusan['judul'] }}
+                </h3>
 
-            Proses AHP–WASPAS dan penetapan penerima
-            masih memerlukan pengolahan
-            dan keputusan seleksi oleh Admin.
+                <p
+                    class="mt-3 text-sm leading-7"
+                >
+                    {{ $infoKeputusan['keterangan'] }}
+                </p>
 
-        </p>
+            </div>
+
+            <p
+                class="mt-4 text-sm leading-7
+                       text-slate-600"
+            >
+                Keputusan ini berasal dari
+                hasil seleksi yang telah
+                diumumkan oleh Admin.
+
+                Status administrasi
+
+                <strong>
+                    {{ $infoStatus['judul'] }}
+                </strong>
+
+                tetap terpisah dari keputusan
+                akhir penerimaan beasiswa.
+            </p>
+
+            <a
+                href="{{ route('user.status') }}"
+                class="mt-5 inline-flex rounded-xl
+                       bg-[#116759] px-5 py-3
+                       text-sm font-bold text-white"
+            >
+                Lihat Status Pengajuan
+            </a>
+
+        <!-- HASIL BELUM DIUMUMKAN -->
+
+        @else
+
+            <p
+                class="mt-4 text-sm leading-7
+                       text-slate-600"
+            >
+                Hasil akhir seleksi beasiswa
+                belum diumumkan untuk pengajuanmu.
+
+                Status
+
+                <strong>
+                    {{ $infoStatus['judul'] }}
+                </strong>
+
+                bukan keputusan akhir penerimaan.
+
+                Pengumuman akan tersedia setelah
+                Admin menetapkan dan memublikasikan
+                hasil seleksi.
+            </p>
+
+            <div
+                class="mt-5 rounded-xl
+                       border border-slate-200
+                       bg-white/80 p-4"
+            >
+
+                <p
+                    class="text-sm font-bold
+                           text-[#103F36]"
+                >
+                    Status Pengumuman:
+                    Menunggu Pengumuman
+                </p>
+
+                <p
+                    class="mt-2 text-xs leading-6
+                           text-slate-600"
+                >
+                    Kamu dapat membuka kembali
+                    Dashboard atau halaman
+                    Status Pengajuan untuk
+                    melihat perkembangan terbaru.
+                </p>
+
+            </div>
+
+        @endif
 
     </section>
 

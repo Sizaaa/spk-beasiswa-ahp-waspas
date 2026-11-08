@@ -13,6 +13,7 @@ use App\Http\Controllers\Admin\SeleksiPengajuanController;
 use App\Http\Controllers\Admin\SensitivitasController;
 use App\Http\Controllers\Admin\LingkupSeleksiController;
 use App\Http\Controllers\Admin\RiwayatSeleksiController;
+use App\Http\Controllers\Admin\PenetapanController;
 
 use App\Http\Controllers\User\DashboardController as UserDashboardController;
 use App\Http\Controllers\User\PengajuanController;
@@ -186,6 +187,27 @@ Route::middleware([
         PerhitunganController::class,
         'hasil'
     ])->name('admin.hasil.index');
+
+    // ============================================
+    // FITUR BARU: PENETAPAN DAN PENGUMUMAN
+    // Tetap menjadi bagian dari Hasil Seleksi.
+    // ============================================
+
+    Route::post(
+        '/admin/hasil-seleksi/penetapan/draf',
+        [
+            PenetapanController::class,
+            'draf'
+        ]
+    )->name('admin.hasil.penetapan.draf');
+
+    Route::post(
+        '/admin/hasil-seleksi/penetapan/umumkan',
+        [
+            PenetapanController::class,
+            'umumkan'
+        ]
+    )->name('admin.hasil.penetapan.umumkan');
 
     // LAPORAN
     Route::get('/admin/laporan', [

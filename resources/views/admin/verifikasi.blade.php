@@ -7,12 +7,16 @@
 
 @push('styles')
 <style>
-    /* DESAIN A - RINGKAS PROFESIONAL */
+    /* ========================================
+       VERIFIKASI PENGAJUAN
+       Desain konsisten dengan Layout Admin
+    ======================================== */
 
     .vra-page {
-        max-width: 1380px;
+        width: 100%;
+        max-width: 1400px;
         margin: 0 auto;
-        padding: 26px 26px 48px;
+        padding: 28px 26px 44px;
     }
 
     .vra-card {
@@ -29,13 +33,9 @@
         box-shadow: 0 12px 24px rgba(16,63,54,.065);
     }
 
-    /* RINGKASAN PENDAFTAR */
-
     .vra-top {
         padding: 23px 26px;
-        background: linear-gradient(
-            110deg, #eaf8f2, #f8fcfa
-        );
+        background: linear-gradient(110deg, #eaf8f2, #f8fcfa);
         display: flex;
         align-items: center;
         gap: 20px;
@@ -127,14 +127,9 @@
         color: #982e3c;
     }
 
-    /* DUA KOLOM, EMPAT BAGIAN */
-
     .vra-columns {
         display: grid;
-        grid-template-columns: repeat(
-            2,
-            minmax(0, 1fr)
-        );
+        grid-template-columns: repeat(2, minmax(0, 1fr));
         gap: 18px;
         align-items: start;
     }
@@ -172,76 +167,75 @@
         height: 3px;
         margin-top: 12px;
         border-radius: 9px;
-        background: linear-gradient(
-            90deg,
-            #07986b,
-            #83d6b0
-        );
+        background: linear-gradient(90deg, #07986b, #83d6b0);
     }
 
     .vra-body {
         padding: 8px 21px 17px;
     }
 
-    /*
-       PERBAIKAN UTAMA:
-       Label dan nilai berada pada baris sama.
-       Tidak memakai dl/dt/dd agar tidak
-       terpengaruh CSS lama.
-    */
+    /* Baris detail pendaftar dibuat ringkas. */
 
-    .vra-pair {
-        display: flex !important;
-        align-items: flex-start !important;
-        gap: 16px !important;
-        padding: 11px 0 !important;
-        border-bottom: 1px solid #edf2ef !important;
-        min-height: 40px;
+    .vra-card .vra-pair {
+        display: grid !important;
+        grid-template-columns:
+            minmax(110px, 38%)
+            minmax(0, 1fr) !important;
+        align-items: start !important;
+        gap: 12px !important;
+        padding: 6px 0 !important;
+        margin: 0 !important;
+        min-height: 0 !important;
+        height: auto !important;
+        border-bottom: 1px solid #edf2ef;
     }
 
-    .vra-pair:last-child {
-        border-bottom: 0 !important;
+    .vra-card .vra-pair:last-child {
+        border-bottom: 0;
     }
 
-    .vra-key {
+    .vra-card .vra-key,
+    .vra-card .vra-val {
         display: block !important;
-        width: 42% !important;
-        flex: 0 0 42% !important;
+        width: auto !important;
+        min-width: 0 !important;
+        flex: initial !important;
+        flex-basis: auto !important;
         margin: 0 !important;
         padding: 0 !important;
+        line-height: 1.45 !important;
+        white-space: normal !important;
+        overflow-wrap: anywhere;
+    }
+
+    .vra-card .vra-key {
         color: #607588;
         font-size: 12px;
-        line-height: 1.6;
-        text-align: left !important;
+        text-align: left;
     }
 
-    .vra-val {
-        display: block !important;
-        min-width: 0 !important;
-        flex: 1 1 0 !important;
-        margin: 0 !important;
-        padding: 0 !important;
+    .vra-card .vra-val {
         color: #183e35;
         font-size: 13px;
         font-weight: 700;
-        line-height: 1.6;
-        text-align: left !important;
-        overflow-wrap: anywhere;
-        white-space: pre-wrap;
+        text-align: left;
     }
 
-    .vra-criteria .vra-key {
-        flex-basis: 67% !important;
-        width: 67% !important;
+    .vra-card .vra-criteria .vra-pair {
+        grid-template-columns:
+            minmax(0, 1fr)
+            minmax(65px, auto) !important;
+    }
+
+    .vra-card .vra-criteria .vra-key {
         color: #285d4a;
     }
 
-    .vra-criteria .vra-val {
+    .vra-card .vra-criteria .vra-val {
         text-align: right !important;
-        white-space: normal;
     }
 
-    /* DOKUMEN */
+    /* Dokumen pendukung */
 
     .vra-doc {
         display: flex;
@@ -282,7 +276,7 @@
         line-height: 1.7;
     }
 
-    /* TOMBOL PUTIH */
+    /* Tombol */
 
     .vra-btn {
         display: inline-flex;
@@ -299,7 +293,6 @@
         line-height: 1.4;
         text-decoration: none;
         cursor: pointer;
-
         transition:
             transform .18s,
             background .18s,
@@ -340,7 +333,7 @@
         padding-top: 16px;
     }
 
-    /* FORM VERIFIKASI */
+    /* Form verifikasi */
 
     .vra-input {
         display: block;
@@ -378,7 +371,7 @@
         outline-offset: 2px;
     }
 
-    /* MODAL DAN BLUR SELURUH WEBSITE */
+    /* Modal konfirmasi */
 
     .vra-modal {
         position: fixed !important;
@@ -412,11 +405,7 @@
         width: 55px;
         height: 4px;
         border-radius: 9px;
-        background: linear-gradient(
-            90deg,
-            #07986b,
-            #77cda8
-        );
+        background: linear-gradient(90deg, #07986b, #77cda8);
         margin-bottom: 20px;
     }
 
@@ -442,7 +431,7 @@
         margin-top: 27px;
     }
 
-    /* SKELETON SHIMMER */
+    /* Shimmer penyimpanan */
 
     .vra-loading {
         position: fixed !important;
@@ -464,8 +453,7 @@
     .vra-bars {
         flex: 1;
         display: grid;
-        grid-template-columns:
-            repeat(3, minmax(0, 1fr));
+        grid-template-columns: repeat(3, minmax(0, 1fr));
         gap: 12px;
     }
 
@@ -487,7 +475,6 @@
             opacity: 0;
             transform: translateY(11px) scale(.985);
         }
-
         to {
             opacity: 1;
             transform: none;
@@ -495,16 +482,11 @@
     }
 
     @keyframes vra-glide {
-        from {
-            background-position: 110% 0;
-        }
-
-        to {
-            background-position: -110% 0;
-        }
+        from { background-position: 110% 0; }
+        to { background-position: -110% 0; }
     }
 
-    /* RESPONSIVE */
+    /* Tampilan responsif */
 
     @media (max-width: 1000px) {
         .vra-columns {
@@ -540,18 +522,18 @@
             padding: 7px 16px 16px;
         }
 
-        .vra-pair {
+        .vra-card .vra-pair {
+            grid-template-columns:
+                minmax(90px, 40%)
+                minmax(0, 1fr) !important;
             gap: 9px !important;
+            padding: 6px 0 !important;
         }
 
-        .vra-key {
-            width: 44% !important;
-            flex-basis: 44% !important;
-        }
-
-        .vra-criteria .vra-key {
-            width: 65% !important;
-            flex-basis: 65% !important;
+        .vra-card .vra-criteria .vra-pair {
+            grid-template-columns:
+                minmax(0, 1fr)
+                minmax(55px, auto) !important;
         }
 
         .vra-loading {
@@ -582,118 +564,6 @@
             animation: none;
         }
     }
-
-/* BCC-COMPACT-ROWS-2026 */
-
-/*
-   BARIS DATA OTOMATIS
-   - Data pendek: satu baris ringkas
-   - Data panjang: membungkus teks otomatis
-   - Tidak ada tinggi baris tetap
-*/
-
-.vra-card .vra-pair {
-    display: grid !important;
-
-    grid-template-columns:
-        minmax(110px, 38%)
-        minmax(0, 1fr) !important;
-
-    align-items: start !important;
-
-    gap: 12px !important;
-
-    padding: 6px 0 !important;
-
-    margin: 0 !important;
-
-    min-height: 0 !important;
-
-    height: auto !important;
-}
-
-/*
-   LABEL DAN NILAI
-
-   white-space: normal menghilangkan
-   spasi/baris kosong dari indentasi Blade.
-*/
-
-.vra-card .vra-key,
-.vra-card .vra-val {
-    display: block !important;
-
-    width: auto !important;
-
-    min-width: 0 !important;
-
-    flex: initial !important;
-
-    flex-basis: auto !important;
-
-    margin: 0 !important;
-
-    padding: 0 !important;
-
-    line-height: 1.45 !important;
-
-    white-space: normal !important;
-
-    overflow-wrap: anywhere;
-}
-
-.vra-card .vra-key {
-    font-size: 12px;
-    color: #607588;
-}
-
-.vra-card .vra-val {
-    font-size: 13px;
-    font-weight: 700;
-    color: #183e35;
-}
-
-/*
-   KHUSUS C1-C5:
-   Label bisa panjang dan nilai tetap
-   rapi di sisi kanan.
-*/
-
-.vra-card .vra-criteria .vra-pair {
-    grid-template-columns:
-        minmax(0, 1fr)
-        minmax(65px, auto) !important;
-}
-
-.vra-card .vra-criteria .vra-val {
-    text-align: right !important;
-}
-
-/*
-   LAYAR KECIL:
-   Baris tetap ringkas.
-   Teks panjang menyesuaikan tinggi.
-*/
-
-@media (max-width: 650px) {
-
-    .vra-card .vra-pair {
-        grid-template-columns:
-            minmax(90px, 40%)
-            minmax(0, 1fr) !important;
-
-        gap: 9px !important;
-
-        padding: 6px 0 !important;
-    }
-
-    .vra-card .vra-criteria .vra-pair {
-        grid-template-columns:
-            minmax(0, 1fr)
-            minmax(55px, auto) !important;
-    }
-}
-
 </style>
 @endpush
 
@@ -723,7 +593,6 @@
             role="alert"
         >
             <strong>Periksa kembali informasi berikut:</strong>
-
             @foreach ($errors->all() as $pesan)
                 <p class="mt-1">{{ $pesan }}</p>
             @endforeach
@@ -735,11 +604,8 @@
         {{-- DAFTAR PENGAJUAN --}}
 
         @if ($filterAktif)
-
             <section class="vra-card mb-5 p-5">
-                <p class="vra-eyebrow">
-                    Filter Pengajuan
-                </p>
+                <p class="vra-eyebrow">Filter Pengajuan</p>
 
                 <h2 class="mt-1 text-xl font-bold text-[#103f36]">
                     {{ $namaFilter }}
@@ -756,37 +622,25 @@
                     Tampilkan Semua
                 </a>
             </section>
-
         @else
-
             <div class="mb-5 grid grid-cols-2 gap-3 lg:grid-cols-4">
-
                 @foreach ($statistikKartu as $item)
                     <div class="vra-card px-5 py-4">
                         <p class="vra-muted">{{ $item[0] }}</p>
-
                         <strong class="mt-2 block text-2xl text-[#103f36]">
                             {{ $item[1] }}
                         </strong>
                     </div>
                 @endforeach
-
             </div>
-
         @endif
 
         <section class="vra-card">
 
-            <div
-                class="vra-head flex flex-wrap
-                       items-center justify-between gap-4"
-            >
+            <div class="vra-head flex flex-wrap items-center justify-between gap-4">
                 <div>
                     <h2>Daftar Pengajuan Beasiswa</h2>
-                    <p>
-                        Pilih pendaftar untuk memeriksa
-                        data dan dokumen.
-                    </p>
+                    <p>Pilih pendaftar untuk memeriksa data dan dokumen.</p>
                 </div>
 
                 <form
@@ -804,39 +658,27 @@
                     <select
                         id="vra-filter"
                         name="status"
-                        class="rounded-xl border border-slate-300
-                               bg-white px-3 py-2 text-sm"
+                        class="rounded-xl border border-slate-300 bg-white px-3 py-2 text-sm"
                     >
-                        <option
-                            value=""
-                            @selected($filter === '')
-                        >
+                        <option value="" @selected($filter === '')>
                             Semua Status
                         </option>
 
                         @foreach ($labelStatus as $kode => $label)
-                            <option
-                                value="{{ $kode }}"
-                                @selected($filter === $kode)
-                            >
+                            <option value="{{ $kode }}" @selected($filter === $kode)>
                                 {{ $label }}
                             </option>
                         @endforeach
                     </select>
 
-                    <button
-                        class="vra-btn"
-                        type="submit"
-                    >
+                    <button class="vra-btn" type="submit">
                         Terapkan
                     </button>
                 </form>
             </div>
 
             <div class="overflow-x-auto px-5 pb-5">
-
                 <table class="w-full min-w-[640px] text-left text-sm">
-
                     <thead class="bg-[#f4f8f6] text-[#3c5e54]">
                         <tr>
                             <th class="p-3">Pendaftar</th>
@@ -848,19 +690,12 @@
                     </thead>
 
                     <tbody class="divide-y divide-slate-100">
-
                         @forelse ($daftar as $item)
-
                             <tr class="hover:bg-[#f8fcfa]">
-
                                 <td class="p-3">
                                     <strong class="text-[#123f34]">
-                                        {{
-                                            $item->nama_lengkap
-                                                ?: $item->username
-                                        }}
+                                        {{ $item->nama_lengkap ?: $item->username }}
                                     </strong>
-
                                     <p class="vra-muted">
                                         {{ $item->asal_sekolah ?: '-' }}
                                     </p>
@@ -873,51 +708,33 @@
                                 <td class="p-3">
                                     {{
                                         $item->diajukan_pada
-                                            ? date(
-                                                'd/m/Y H:i',
-                                                strtotime($item->diajukan_pada)
-                                            )
+                                            ? date('d/m/Y H:i', strtotime($item->diajukan_pada))
                                             : '-'
                                     }}
                                 </td>
 
                                 <td class="p-3">
-                                    <span
-                                        class="vra-badge vra-status-{{ $item->status }}"
-                                    >
-                                        {{
-                                            $labelStatus[$item->status]
-                                                ?? $item->status
-                                        }}
+                                    <span class="vra-badge vra-status-{{ $item->status }}">
+                                        {{ $labelStatus[$item->status] ?? $item->status }}
                                     </span>
                                 </td>
 
                                 <td class="p-3">
                                     <a
                                         class="vra-btn"
-                                        href="{{ route(
-                                            'admin.verifikasi.index',
-                                            ['detail' => $item->id]
-                                        ) }}"
+                                        href="{{ route('admin.verifikasi.index', ['detail' => $item->id]) }}"
                                     >
                                         Lihat Detail
                                     </a>
                                 </td>
                             </tr>
-
                         @empty
-
                             <tr>
-                                <td
-                                    class="p-8 text-center text-slate-500"
-                                    colspan="5"
-                                >
+                                <td class="p-8 text-center text-slate-500" colspan="5">
                                     Belum ada pengajuan yang sesuai.
                                 </td>
                             </tr>
-
                         @endforelse
-
                     </tbody>
                 </table>
             </div>
@@ -932,7 +749,7 @@
 
     @else
 
-        {{-- DETAIL PENGAJUAN: DESAIN A --}}
+        {{-- DETAIL PENGAJUAN --}}
 
         <a
             href="{{ route('admin.verifikasi.index') }}"
@@ -942,8 +759,7 @@
         </a>
 
         @php
-            $namaPendaftar = $detail->nama_lengkap
-                ?: $detail->username;
+            $namaPendaftar = $detail->nama_lengkap ?: $detail->username;
 
             $inisial = mb_strtoupper(
                 mb_substr(trim($namaPendaftar), 0, 2)
@@ -986,120 +802,75 @@
                 'C1 · Penghasilan orang tua' => $penghasilan,
                 'C2 · Jumlah tanggungan' => $tanggungan,
                 'C3 · Nilai akademik' => $nilai,
-                'C4 · Kondisi tempat tinggal' =>
-                    $detail->kondisi_tempat_tinggal,
-                'C5 · Prestasi non-akademik' =>
-                    $detail->prestasi_non_akademik,
+                'C4 · Kondisi tempat tinggal' => $detail->kondisi_tempat_tinggal,
+                'C5 · Prestasi non-akademik' => $detail->prestasi_non_akademik,
             ];
 
             $dataKeluarga = [
-                'Pekerjaan orang tua/wali' =>
-                    $detail->pekerjaan_orang_tua,
+                'Pekerjaan orang tua/wali' => $detail->pekerjaan_orang_tua,
                 'Penghasilan per bulan' => $penghasilan,
                 'Jumlah tanggungan' => $tanggungan,
             ];
         @endphp
 
-        <!-- RINGKASAN PENDAFTAR -->
-
         <section class="vra-card mb-5">
-
             <div class="vra-top">
-
                 <div class="vra-avatar" aria-hidden="true">
                     {{ $inisial ?: 'PD' }}
                 </div>
 
                 <div class="vra-top-main">
-
                     <p class="vra-eyebrow">
                         Detail Pengajuan Beasiswa · No. {{ $detail->id }}
                     </p>
 
-                    <h2 class="vra-name">
-                        {{ $namaPendaftar }}
-                    </h2>
+                    <h2 class="vra-name">{{ $namaPendaftar }}</h2>
 
                     <div class="vra-top-sub">
-
                         <span>
                             NISN:
-                            <strong>
-                                {{ $detail->nisn ?: '-' }}
-                            </strong>
+                            <strong>{{ $detail->nisn ?: '-' }}</strong>
                         </span>
 
                         <span>
                             Sekolah:
-                            <strong>
-                                {{ $detail->asal_sekolah ?: '-' }}
-                            </strong>
+                            <strong>{{ $detail->asal_sekolah ?: '-' }}</strong>
                         </span>
-
                     </div>
                 </div>
 
                 <div class="vra-top-side">
-
-                    <span
-                        class="vra-badge vra-status-{{ $detail->status }}"
-                    >
-                        {{
-                            $labelStatus[$detail->status]
-                                ?? $detail->status
-                        }}
+                    <span class="vra-badge vra-status-{{ $detail->status }}">
+                        {{ $labelStatus[$detail->status] ?? $detail->status }}
                     </span>
 
                     <span class="vra-muted">
                         Diajukan:
                         {{
                             $detail->diajukan_pada
-                                ? date(
-                                    'd/m/Y, H:i',
-                                    strtotime($detail->diajukan_pada)
-                                )
+                                ? date('d/m/Y, H:i', strtotime($detail->diajukan_pada))
                                 : '-'
                         }}
                     </span>
-
                 </div>
-
             </div>
-
         </section>
-
-        <!-- EMPAT KARTU INFORMASI -->
 
         <div class="vra-columns mb-5">
 
-            <!-- KOLOM KIRI -->
-
             <div class="vra-column">
 
-                <!-- DATA PRIBADI -->
-
                 <section class="vra-card">
-
                     <div class="vra-head">
                         <h2>Data Pribadi Pendaftar</h2>
-
-                        <p>
-                            Identitas, sekolah, dan kontak pendaftar.
-                        </p>
-
+                        <p>Identitas, sekolah, dan kontak pendaftar.</p>
                         <span class="vra-accent"></span>
                     </div>
 
                     <div class="vra-body">
-
                         @foreach ($dataPribadi as $label => $value)
-
                             <div class="vra-pair">
-
-                                <span class="vra-key">
-                                    {{ $label }}
-                                </span>
-
+                                <span class="vra-key">{{ $label }}</span>
                                 <span class="vra-val">
                                     {{
                                         $value === null || $value === ''
@@ -1107,38 +878,22 @@
                                             : $value
                                     }}
                                 </span>
-
                             </div>
-
                         @endforeach
-
                     </div>
                 </section>
 
-                <!-- DATA KELUARGA -->
-
                 <section class="vra-card">
-
                     <div class="vra-head">
                         <h2>Data Keluarga dan Penghasilan</h2>
-
-                        <p>
-                            Kondisi ekonomi keluarga pendaftar.
-                        </p>
-
+                        <p>Kondisi ekonomi keluarga pendaftar.</p>
                         <span class="vra-accent"></span>
                     </div>
 
                     <div class="vra-body">
-
                         @foreach ($dataKeluarga as $label => $value)
-
                             <div class="vra-pair">
-
-                                <span class="vra-key">
-                                    {{ $label }}
-                                </span>
-
+                                <span class="vra-key">{{ $label }}</span>
                                 <span class="vra-val">
                                     {{
                                         $value === null || $value === ''
@@ -1146,45 +901,26 @@
                                             : $value
                                     }}
                                 </span>
-
                             </div>
-
                         @endforeach
-
                     </div>
                 </section>
 
             </div>
 
-            <!-- KOLOM KANAN -->
-
             <div class="vra-column">
 
-                <!-- KRITERIA PENILAIAN -->
-
                 <section class="vra-card">
-
                     <div class="vra-head">
                         <h2>Kriteria Penilaian (C1–C5)</h2>
-
-                        <p>
-                            Data yang digunakan dalam
-                            perhitungan seleksi.
-                        </p>
-
+                        <p>Data yang digunakan dalam perhitungan seleksi.</p>
                         <span class="vra-accent"></span>
                     </div>
 
                     <div class="vra-body vra-criteria">
-
                         @foreach ($dataKriteria as $label => $value)
-
                             <div class="vra-pair">
-
-                                <span class="vra-key">
-                                    {{ $label }}
-                                </span>
-
+                                <span class="vra-key">{{ $label }}</span>
                                 <span class="vra-val">
                                     {{
                                         $value === null || $value === ''
@@ -1192,139 +928,84 @@
                                             : $value
                                     }}
                                 </span>
-
                             </div>
-
                         @endforeach
 
                         <p class="vra-note mt-4">
                             Penghasilan lebih rendah lebih diprioritaskan.
-                            Untuk C2–C5, skor yang lebih tinggi
-                            memberikan prioritas lebih besar sesuai
-                            ketentuan penelitian.
+                            Untuk C2–C5, skor yang lebih tinggi memberikan
+                            prioritas lebih besar sesuai ketentuan penelitian.
                         </p>
-
                     </div>
                 </section>
 
-                <!-- DOKUMEN -->
-
                 <section class="vra-card">
-
                     <div class="vra-head">
                         <h2>Dokumen Pendukung</h2>
-
-                        <p>
-                            Periksa berkas secara langsung
-                            sebelum verifikasi.
-                        </p>
-
+                        <p>Periksa berkas secara langsung sebelum verifikasi.</p>
                         <span class="vra-accent"></span>
                     </div>
 
                     <div class="vra-body">
-
                         @foreach ($dokumen as $jenis => $file)
-
                             <div class="vra-doc">
-
                                 <div>
-
                                     <p class="vra-doc-name">
                                         {{ $file['nama'] }}
                                     </p>
 
-                                    <p
-                                        class="vra-doc-state
-                                               {{ $file['ada']
-                                                   ? 'is-ready'
-                                                   : '' }}"
-                                    >
-                                        {{
-                                            $file['ada']
-                                                ? 'Berkas tersedia'
-                                                : 'Belum ada berkas'
-                                        }}
-
+                                    <p class="vra-doc-state {{ $file['ada'] ? 'is-ready' : '' }}">
+                                        {{ $file['ada'] ? 'Berkas tersedia' : 'Belum ada berkas' }}
                                         ·
-
-                                        {{
-                                            $file['wajib']
-                                                ? 'Wajib'
-                                                : 'Opsional'
-                                        }}
+                                        {{ $file['wajib'] ? 'Wajib' : 'Opsional' }}
                                     </p>
-
                                 </div>
 
                                 @if ($file['ada'])
-
                                     <a
                                         class="vra-btn"
-                                        href="{{ route(
-                                            'admin.verifikasi.unduh',
-                                            [
-                                                'id' => $detail->id,
-                                                'jenis' => $jenis
-                                            ]
-                                        ) }}"
+                                        href="{{ route('admin.verifikasi.unduh', [
+                                            'id' => $detail->id,
+                                            'jenis' => $jenis,
+                                        ]) }}"
                                     >
                                         Unduh
                                     </a>
-
                                 @else
-
-                                    <span class="vra-muted">
-                                        Tidak tersedia
-                                    </span>
-
+                                    <span class="vra-muted">Tidak tersedia</span>
                                 @endif
-
                             </div>
-
                         @endforeach
 
                         <p class="vra-note mt-3">
-                            Berkas tersedia belum berarti isinya
-                            sudah benar. Admin tetap perlu
-                            memeriksanya.
+                            Berkas tersedia belum berarti isinya sudah benar.
+                            Admin tetap perlu memeriksanya.
                         </p>
-
                     </div>
                 </section>
 
             </div>
         </div>
 
-        <!-- KEPUTUSAN VERIFIKASI -->
-
         <section class="vra-card">
-
             <div class="vra-head">
                 <h2>Keputusan Verifikasi Administrasi</h2>
-
                 <p>
                     Memverifikasi berkas tidak otomatis
                     menetapkan penerima beasiswa.
                 </p>
-
                 <span class="vra-accent"></span>
             </div>
 
             <div class="vra-body" style="padding-top:18px">
-
                 @if ($detail->status === 'diajukan')
 
                     <form
                         id="vra-form"
                         method="POST"
-                        action="{{ route(
-                            'admin.verifikasi.keputusan',
-                            ['id' => $detail->id]
-                        ) }}"
+                        action="{{ route('admin.verifikasi.keputusan', ['id' => $detail->id]) }}"
                         novalidate
                     >
-
                         @csrf
 
                         <input
@@ -1373,8 +1054,7 @@
 
                         <label
                             for="vra-periksa"
-                            class="mt-4 flex items-start gap-3
-                                   text-sm text-[#254238]"
+                            class="mt-4 flex items-start gap-3 text-sm text-[#254238]"
                         >
                             <input
                                 id="vra-periksa"
@@ -1408,7 +1088,6 @@
                         ></p>
 
                         <div class="vra-actions">
-
                             <button
                                 type="button"
                                 class="vra-btn"
@@ -1432,12 +1111,10 @@
                             >
                                 Tolak Pengajuan
                             </button>
-
                         </div>
-
                     </form>
 
-                    <!-- MODAL KONFIRMASI -->
+                    <!-- Modal konfirmasi -->
 
                     <div
                         id="vra-modal"
@@ -1449,7 +1126,6 @@
                         hidden
                     >
                         <div class="vra-dialog">
-
                             <div class="vra-dialog-rule"></div>
 
                             <h2 id="vra-modal-title">
@@ -1459,7 +1135,6 @@
                             <p id="vra-modal-description"></p>
 
                             <div class="vra-dialog-actions">
-
                                 <button
                                     type="button"
                                     class="vra-btn"
@@ -1475,12 +1150,11 @@
                                 >
                                     Ya, Lanjutkan
                                 </button>
-
                             </div>
                         </div>
                     </div>
 
-                    <!-- SKELETON SHIMMER -->
+                    <!-- Shimmer penyimpanan -->
 
                     <div
                         id="vra-loading"
@@ -1504,13 +1178,9 @@
                 @else
 
                     <div class="vra-note">
-
                         <strong>
                             Status saat ini:
-                            {{
-                                $labelStatus[$detail->status]
-                                    ?? $detail->status
-                            }}
+                            {{ $labelStatus[$detail->status] ?? $detail->status }}
                         </strong>
 
                         <p class="mt-2">
@@ -1519,21 +1189,14 @@
                         </p>
 
                         @if ($detail->catatan_admin)
-
-                            <p class="mt-3 font-bold">
-                                Catatan Admin:
-                            </p>
-
+                            <p class="mt-3 font-bold">Catatan Admin:</p>
                             <p class="mt-1 whitespace-pre-wrap">
                                 {{ $detail->catatan_admin }}
                             </p>
-
                         @endif
-
                     </div>
 
                 @endif
-
             </div>
         </section>
 
@@ -1568,7 +1231,6 @@
     const cancel = document.getElementById('vra-batal');
     const accept = document.getElementById('vra-lanjut');
     const input = document.getElementById('vra-keputusan');
-
     const notes = document.getElementById('vra-catatan');
     const approval = document.getElementById('vra-periksa');
 
@@ -1580,46 +1242,38 @@
         'vra-error-periksa'
     );
 
-    // Agar blur mencakup sidebar dan header.
+    // Modal dan shimmer ditempatkan langsung
+    // pada body agar menutupi seluruh halaman.
     document.body.append(modal, loading);
 
     const choices = {
         terverifikasi: {
             title: 'Konfirmasi Verifikasi',
-
             text:
                 'Pastikan data dan dokumen sudah diperiksa. ' +
                 'Pengajuan ini akan berstatus Terverifikasi, ' +
                 'bukan otomatis diterima beasiswa.',
-
             button: 'Ya, Verifikasi Administrasi',
-
             tone: ''
         },
 
         perlu_perbaikan: {
             title: 'Konfirmasi Perbaikan',
-
             text:
                 'Catatan akan disampaikan kepada pendaftar ' +
                 'sehingga data atau dokumen dapat diperbaiki ' +
                 'dan dikirim ulang.',
-
             button: 'Ya, Minta Perbaikan',
-
             tone: 'vra-btn-warning'
         },
 
         ditolak: {
             title: 'Konfirmasi Penolakan',
-
             text:
                 'Pengajuan ini akan ditolak dengan alasan ' +
                 'yang ditulis. Pastikan keputusan telah ' +
                 'dipertimbangkan.',
-
             button: 'Ya, Tolak Pengajuan',
-
             tone: 'vra-btn-danger'
         }
     };
@@ -1632,7 +1286,6 @@
 
     function clear(field, output) {
         output.hidden = true;
-
         field.classList.remove('vra-invalid');
         field.removeAttribute('aria-invalid');
 
@@ -1656,12 +1309,7 @@
         output.hidden = false;
 
         field.classList.add('vra-invalid');
-
-        field.setAttribute(
-            'aria-invalid',
-            'true'
-        );
-
+        field.setAttribute('aria-invalid', 'true');
         field.focus();
 
         field.scrollIntoView({
@@ -1672,18 +1320,12 @@
 
     function close() {
         modal.hidden = true;
-
         document.body.style.overflow = previousOverflow;
-
         selected = null;
-
         previousFocus?.focus();
     }
 
-    form.querySelectorAll(
-        '[data-vra-action]'
-    ).forEach(button => {
-
+    form.querySelectorAll('[data-vra-action]').forEach(button => {
         button.addEventListener('click', () => {
             if (submitting) return;
 
@@ -1699,11 +1341,9 @@
                 fail(
                     approval,
                     approvalError,
-
                     'Centang pernyataan setelah memeriksa ' +
                     'data dan dokumen.'
                 );
-
                 return;
             }
 
@@ -1714,29 +1354,23 @@
                 fail(
                     notes,
                     noteError,
-
                     'Tuliskan alasan minimal 10 karakter ' +
                     'sebelum melanjutkan.'
                 );
-
                 return;
             }
 
             selected = action;
-
             title.textContent = choice.title;
             description.textContent = choice.text;
             accept.textContent = choice.button;
-
             accept.className = 'vra-btn ' + choice.tone;
 
             previousFocus = document.activeElement;
             previousOverflow = document.body.style.overflow;
 
             document.body.style.overflow = 'hidden';
-
             modal.hidden = false;
-
             cancel.focus();
         });
     });
@@ -1764,7 +1398,6 @@
             ) {
                 event.preventDefault();
                 accept.focus();
-
             } else if (
                 !event.shiftKey &&
                 document.activeElement === accept
@@ -1782,25 +1415,16 @@
         }
 
         submitting = true;
-
         loading.hidden = false;
-
-        form.setAttribute(
-            'aria-busy',
-            'true'
-        );
+        form.setAttribute('aria-busy', 'true');
     });
 
     accept.addEventListener('click', () => {
         if (!selected || submitting) return;
 
-        // Nilai yang diperlukan controller Laravel.
         input.value = selected;
-
         confirmed = true;
-
         close();
-
         form.requestSubmit();
     });
 
@@ -1809,12 +1433,9 @@
 
         submitting = false;
         confirmed = false;
-
         loading.hidden = true;
         modal.hidden = true;
-
         form.removeAttribute('aria-busy');
-
         document.body.style.overflow = previousOverflow;
     });
 })();

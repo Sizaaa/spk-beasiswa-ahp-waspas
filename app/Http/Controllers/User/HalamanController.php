@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\User;
 
 use App\Http\Controllers\Controller;
+use App\Services\PenetapanBeasiswa;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\View\View;
@@ -17,11 +18,17 @@ class HalamanController extends Controller
         );
     }
 
-    // STATUS PENGAJUAN
-    public function status(Request $request): View
-    {
+    // ============================================
+    // STATUS PENGAJUAN DAN HASIL AKHIR BEASISWA
+    // ============================================
+
+    public function status(
+        Request $request,
+        PenetapanBeasiswa $penetapanBeasiswa
+    ): View {
         $this->wajibUser($request);
 
+        // Hanya mengambil pengajuan milik User login.
         $pengajuan = DB::table('pengajuan_beasiswa')
             ->where('akun_id', $request->user()->id)
             ->first();
@@ -80,14 +87,29 @@ class HalamanController extends Controller
             'warna' => 'bg-slate-100 text-slate-700',
         ];
 
+        // Keputusan akhir terpisah dari status administrasi.
+        $hasilAkhir = null;
+
+        if (
+            $pengajuan &&
+            $status === 'terverifikasi'
+        ) {
+            $hasilAkhir = $penetapanBeasiswa
+                ->hasilUser((int) $pengajuan->id);
+        }
+
         return view('user.status', compact(
             'pengajuan',
             'status',
-            'info'
+            'info',
+            'hasilAkhir'
         ));
     }
 
+    // ============================================
     // PROFIL USER
+    // ============================================
+
     public function profil(Request $request): View
     {
         $this->wajibUser($request);
@@ -97,7 +119,10 @@ class HalamanController extends Controller
         ]);
     }
 
+    // ============================================
     // PANDUAN USER
+    // ============================================
+
     public function panduan(Request $request): View
     {
         $this->wajibUser($request);

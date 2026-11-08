@@ -16,8 +16,7 @@
 @section('admin-content')
 
 @php
-    $modeAktif = $informasi['mode']
-        ?? 'artikel';
+    $modeAktif = $informasi['mode'] ?? 'artikel';
 
     $daftarKriteria = array_values(
         \App\Services\SpkCalculator::KRITERIA
@@ -29,7 +28,6 @@
     $ahpSesi = session('spk_ahp');
 
     $bobotSimulasi = null;
-
     $crSimulasi = null;
 
     if (
@@ -48,24 +46,25 @@
         ) === 5 &&
         is_numeric($ahpSesi['cr'])
     ) {
-
         $bobotSimulasi = array_values(
             $ahpSesi['bobot']
         );
 
-        $crSimulasi = (float)
-            $ahpSesi['cr'];
+        $crSimulasi = (float) $ahpSesi['cr'];
     }
 @endphp
 
 <main class="bc-admin-main space-y-6">
 
-    <!-- LINGKUP AKTIF -->
+    <!-- ======================================
+         LINGKUP SELEKSI YANG AKTIF
+    ======================================= -->
+
     @include('admin.partials.lingkup-aktif')
 
-    <!-- =====================================
-         DUA MODE BOBOT
-    ===================================== -->
+    <!-- ======================================
+         PERBANDINGAN SUMBER BOBOT
+    ======================================= -->
 
     <section
         class="grid gap-5 lg:grid-cols-2"
@@ -73,68 +72,51 @@
     >
 
         <!-- BOBOT ARTIKEL -->
+
         <article class="bc-panel">
 
             <div class="bc-panel-body h-full">
 
-                <div class="flex flex-wrap
-                            items-start justify-between
-                            gap-3"
+                <div
+                    class="flex flex-wrap
+                           items-start justify-between
+                           gap-3"
                 >
-
                     <div>
-
                         <h2 class="bc-panel-title">
                             Bobot Artikel
                         </h2>
 
                         <p class="bc-panel-desc">
-
                             Bobot yang tercantum
                             dalam artikel penelitian.
-
                         </p>
-
                     </div>
 
                     <span
                         class="bc-status
                                {{ $modeAktif === 'artikel'
-                                  ? 'bc-status--terverifikasi'
-                                  : 'bc-status--perlu_perbaikan' }}"
+                                   ? 'bc-status--terverifikasi'
+                                   : 'bc-status--perlu_perbaikan' }}"
                     >
-
                         {{ $modeAktif === 'artikel'
                             ? 'Aktif'
                             : 'Tidak aktif' }}
-
                     </span>
-
                 </div>
 
-                <dl class="mt-5 divide-y
-                           divide-slate-100"
-                >
+                <dl class="mt-5 divide-y divide-slate-100">
 
-                    @foreach (
-                        $daftarKriteria as $i => $item
-                    )
+                    @foreach ($daftarKriteria as $i => $item)
 
                         <div
                             class="flex items-center
                                    justify-between
                                    gap-4 py-2.5"
                         >
+                            <dt class="min-w-0 text-sm text-slate-600">
 
-                            <dt
-                                class="min-w-0 text-sm
-                                       text-slate-600"
-                            >
-
-                                <strong
-                                    class="mr-2
-                                           text-[#103F36]"
-                                >
+                                <strong class="mr-2 text-[#103F36]">
                                     C{{ $i + 1 }}
                                 </strong>
 
@@ -144,19 +126,15 @@
 
                             <dd
                                 class="shrink-0 text-sm
-                                       font-extrabold
-                                       text-[#103F36]"
+                                       font-extrabold text-[#103F36]"
                             >
-
                                 {{ number_format(
                                     $bobotArtikel[$i],
                                     3,
                                     ',',
                                     '.'
                                 ) }}
-
                             </dd>
-
                         </div>
 
                     @endforeach
@@ -164,108 +142,85 @@
                 </dl>
 
                 <p class="bc-muted-note mt-3">
-
                     CR 0,045 dilaporkan di artikel,
                     tetapi matriks AHP aslinya
-                    tidak dicantumkan untuk
-                    dihitung ulang.
-
+                    tidak dicantumkan untuk dihitung ulang.
                 </p>
 
             </div>
 
         </article>
 
-        <!-- BOBOT SIMULASI -->
+        <!-- BOBOT SIMULASI AHP -->
+
         <article class="bc-panel">
 
             <div class="bc-panel-body h-full">
 
-                <div class="flex flex-wrap
-                            items-start justify-between
-                            gap-3"
+                <div
+                    class="flex flex-wrap
+                           items-start justify-between
+                           gap-3"
                 >
-
                     <div>
-
                         <h2 class="bc-panel-title">
                             Bobot Simulasi AHP
                         </h2>
 
                         <p class="bc-panel-desc">
-
                             Hasil AHP yang dihitung
                             Admin dalam sesi ini.
-
                         </p>
-
                     </div>
 
                     <span
                         class="bc-status
                                {{ $modeAktif === 'simulasi'
-                                  ? 'bc-status--terverifikasi'
-                                  : 'bc-status--perlu_perbaikan' }}"
+                                   ? 'bc-status--terverifikasi'
+                                   : 'bc-status--perlu_perbaikan' }}"
                     >
-
                         {{ $modeAktif === 'simulasi'
                             ? 'Aktif'
                             : 'Tidak aktif' }}
-
                     </span>
-
                 </div>
 
                 @if ($bobotSimulasi !== null)
 
-                    <dl
-                        class="mt-5 divide-y
-                               divide-slate-100"
-                    >
+                    <dl class="mt-5 divide-y divide-slate-100">
 
-                        @foreach (
-                            $daftarKriteria
-                            as $i => $item
-                        )
+                        @foreach ($daftarKriteria as $i => $item)
 
                             <div
                                 class="flex items-center
                                        justify-between
                                        gap-4 py-2.5"
                             >
-
                                 <dt
                                     class="min-w-0 text-sm
                                            text-slate-600"
                                 >
-
                                     <strong
-                                        class="mr-2
-                                               text-[#103F36]"
+                                        class="mr-2 text-[#103F36]"
                                     >
                                         C{{ $i + 1 }}
                                     </strong>
 
                                     {{ $item['nama'] }}
-
                                 </dt>
 
                                 <dd
-                                    class="shrink-0
-                                           text-sm
+                                    class="shrink-0 text-sm
                                            font-extrabold
                                            text-[#103F36]"
                                 >
-
                                     {{ number_format(
                                         (float) $bobotSimulasi[$i],
                                         3,
                                         ',',
                                         '.'
                                     ) }}
-
                                 </dd>
-
                             </div>
 
                         @endforeach
@@ -273,7 +228,6 @@
                     </dl>
 
                     <p class="bc-muted-note mt-3">
-
                         CR simulasi =
 
                         {{ number_format(
@@ -288,7 +242,6 @@
                         {{ $crSimulasi <= 0.10
                             ? 'Konsisten'
                             : 'Belum konsisten' }}.
-
                     </p>
 
                 @else
@@ -298,10 +251,8 @@
                                bg-slate-50 p-5
                                text-sm text-slate-600"
                     >
-
                         Belum ada hasil simulasi AHP
                         pada sesi Admin ini.
-
                     </p>
 
                 @endif
@@ -312,15 +263,14 @@
 
     </section>
 
-    <!-- =====================================
-         INFORMASI BOBOT AKTIF
-    ===================================== -->
+    <!-- ======================================
+         BOBOT YANG SEDANG DIGUNAKAN
+    ======================================= -->
 
     <section
         class="bc-notice flex flex-wrap
                items-start justify-between gap-3"
     >
-
         <div class="min-w-0 flex-1">
 
             <p class="font-bold text-[#103F36]">
@@ -334,9 +284,7 @@
             </p>
 
             <p class="mt-1 break-words">
-
                 {{ $informasi['sumber'] }}
-
             </p>
 
         </div>
@@ -346,21 +294,20 @@
                    bg-white px-3 py-2
                    text-xs font-bold"
         >
-
-            λ =
-
-            {{ number_format(
+            λ = {{ number_format(
                 $lambda,
                 1,
                 ',',
                 '.'
             ) }}
-
         </span>
 
     </section>
 
-    <!-- PESAN -->
+    <!-- ======================================
+         PESAN BERHASIL
+    ======================================= -->
+
     @if (session('sukses'))
 
         <p
@@ -368,16 +315,14 @@
             class="rounded-xl bg-emerald-50
                    p-4 text-sm text-emerald-800"
         >
-
             {{ session('sukses') }}
-
         </p>
 
     @endif
 
-    <!-- =====================================
-         HASIL SELEKSI
-    ===================================== -->
+    <!-- ======================================
+         TABEL HASIL SELEKSI WASPAS
+    ======================================= -->
 
     <section class="bc-panel">
 
@@ -392,17 +337,16 @@
                 <p class="bc-panel-desc">
 
                     {{ $hasil['jumlah'] }}
-                    alternatif dihitung
-                    dalam lingkup
-
+                    alternatif dihitung dalam lingkup
                     {{ $lingkupInfo['judul'] }}.
 
-                    Nilai Akhir (Qi) tertinggi memperoleh
-                    peringkat pertama.
+                    Nilai Akhir (Qi) tertinggi
+                    memperoleh peringkat pertama.
 
                 </p>
 
-                <!-- MENU AKSI -->
+                <!-- TOMBOL FITUR LAMA -->
+
                 <div
                     class="mt-4 flex flex-wrap
                            items-center gap-2"
@@ -474,11 +418,8 @@
             @elseif ($hasil['jumlah'] === 0)
 
                 <p class="bc-notice">
-
-                    Belum ada alternatif
-                    yang memenuhi syarat
-                    dalam lingkup ini.
-
+                    Belum ada alternatif yang memenuhi
+                    syarat dalam lingkup ini.
                 </p>
 
             @else
@@ -491,62 +432,47 @@
                     >
 
                         <thead>
-
                             <tr>
-
                                 <th>Peringkat</th>
                                 <th>Kode</th>
                                 <th>Nama Calon Penerima</th>
                                 <th>Nilai Akhir (Qi)</th>
-
                             </tr>
-
                         </thead>
 
                         <tbody>
 
-                            @foreach (
-                                $hasil['peringkat']
-                                as $baris
-                            )
+                            @foreach ($hasil['peringkat'] as $baris)
 
                                 <tr>
 
                                     <td
                                         class="font-bold
                                                {{ $loop->first
-                                                  ? 'text-emerald-700'
-                                                  : '' }}"
+                                                   ? 'text-emerald-700'
+                                                   : '' }}"
                                     >
-
                                         #{{ $baris['peringkat'] }}
-
                                     </td>
 
                                     <td class="font-semibold">
-
                                         {{ $baris['kode'] }}
-
                                     </td>
 
                                     <td>
-
                                         {{ $baris['nama'] }}
-
                                     </td>
 
                                     <td
                                         class="font-extrabold
                                                text-[#103F36]"
                                     >
-
                                         {{ number_format(
                                             $baris['q'],
                                             6,
                                             ',',
                                             '.'
                                         ) }}
-
                                     </td>
 
                                 </tr>
@@ -559,31 +485,30 @@
 
                 </div>
 
-                <!-- KETERANGAN HASIL -->
+                <!-- PENJELASAN PERINGKAT -->
+
                 <div class="bc-notice mt-5">
 
                     Peringkat adalah rekomendasi
                     pendukung keputusan,
-                    bukan keputusan penerimaan
-                    otomatis.
+                    bukan keputusan penerimaan otomatis.
 
                     @if (
-                        $lingkupInfo['mode']
-                        === 'artikel'
+                        $lingkupInfo['mode'] ===
+                        \App\Services\LingkupSeleksi::ARTIKEL
                     )
 
                         Data A1–A5 adalah
                         simulasi penelitian.
 
                     @elseif (
-                        $lingkupInfo['mode']
-                        === 'pendaftar'
+                        $lingkupInfo['mode'] ===
+                        \App\Services\LingkupSeleksi::PENDAFTAR
                     )
 
                         Hanya pengajuan terverifikasi
                         yang valid dan sudah masuk
-                        sebagai PG-ID yang
-                        diperhitungkan.
+                        sebagai PG-ID yang diperhitungkan.
 
                     @else
 
@@ -600,6 +525,14 @@
         </div>
 
     </section>
+
+    <!-- ======================================
+         PENETAPAN PENERIMA BEASISWA
+         Panel selalu ditampilkan.
+         Keputusan hanya untuk lingkup pendaftar.
+    ======================================= -->
+
+    @include('admin.partials.penetapan-hasil')
 
 </main>
 

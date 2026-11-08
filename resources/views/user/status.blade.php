@@ -106,6 +106,13 @@
 
     @endif
 
+    <!-- =====================================
+         FITUR BARU: HASIL AKHIR BEASISWA
+         Tetap di halaman Status Pengajuan.
+    ===================================== -->
+
+    @include('user.partials.hasil-akhir')
+
     <!-- LANGKAH SELANJUTNYA -->
     <section class="mt-6 rounded-2xl
                     border border-emerald-100
@@ -142,9 +149,19 @@
 
             @elseif ($status === 'terverifikasi')
 
-                Pengajuan sudah lolos pemeriksaan
-                administrasi. Tunggu proses seleksi
-                dan pengumuman resmi.
+                @if ($hasilAkhir)
+
+                    Hasil akhir seleksi sudah diumumkan.
+                    Silakan lihat bagian Hasil Akhir
+                    Beasiswa di halaman ini.
+
+                @else
+
+                    Pengajuan sudah lolos pemeriksaan
+                    administrasi. Tunggu proses seleksi
+                    dan pengumuman resmi.
+
+                @endif
 
             @elseif ($status === 'ditolak')
 

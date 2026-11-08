@@ -3,8 +3,10 @@
 namespace App\Http\Controllers\User;
 
 use App\Http\Controllers\Controller;
+use App\Services\PenetapanBeasiswa;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Schema;
 use Illuminate\View\View;
 use Symfony\Component\HttpFoundation\StreamedResponse;
 
@@ -23,11 +25,8 @@ class DashboardController extends Controller
     }
 
     // =========================================
-    // LOKASI PENYIMPANAN DOKUMEN
+    // LOKASI DOKUMEN
     // =========================================
-
-    // Menggunakan folder yang sama dengan
-    // website PHP Native sebelumnya.
 
     private function folderAkun(int $idAkun): string
     {
@@ -38,7 +37,7 @@ class DashboardController extends Controller
     }
 
     // =========================================
-    // MENCARI DOKUMEN TERSIMPAN
+    // MENCARI DOKUMEN
     // =========================================
 
     private function cariDokumen(
@@ -59,8 +58,85 @@ class DashboardController extends Controller
                 is_readable($lokasi) &&
                 filesize($lokasi) > 0
             ) {
-
                 return $lokasi;
+            }
+        }
+
+        return null;
+    }
+
+    // =========================================
+    // MEMBACA KEPUTUSAN AKHIR
+    // =========================================
+    //
+    // Layanan PenetapanBeasiswa hanya boleh
+    // mengembalikan keputusan yang sudah
+    // diumumkan secara resmi.
+    //
+    // Metode ini menormalkan nama keputusan
+    // untuk ditampilkan pada Dashboard.
+    //
+    // Tidak boleh membuat keputusan baru
+    // hanya berdasarkan status Terverifikasi.
+    // =========================================
+
+    private function keputusanPublik(mixed $hasil): ?string
+    {
+        if ($hasil === null) {
+            return null;
+        }
+
+        $nilaiYangDiperiksa = [];
+
+        if (is_string($hasil)) {
+            $nilaiYangDiperiksa[] = $hasil;
+        }
+
+        foreach ([
+            'keputusan',
+            'status_keputusan',
+            'keputusan_akhir',
+            'hasil_akhir',
+            'status_akhir',
+            'hasil',
+            'status',
+            'peserta.keputusan',
+            'peserta.status',
+            'detail.keputusan',
+        ] as $kunci) {
+
+            $nilaiYangDiperiksa[] = data_get(
+                $hasil,
+                $kunci
+            );
+        }
+
+        foreach ($nilaiYangDiperiksa as $nilai) {
+
+            if (!is_string($nilai)) {
+                continue;
+            }
+
+            $kode = mb_strtolower(
+                trim($nilai)
+            );
+
+            $kode = str_replace(
+                [' ', '-'],
+                '_',
+                $kode
+            );
+
+            if (in_array(
+                $kode,
+                [
+                    'diterima',
+                    'cadangan',
+                    'tidak_diterima',
+                ],
+                true
+            )) {
+                return $kode;
             }
         }
 
@@ -71,15 +147,22 @@ class DashboardController extends Controller
     // MENAMPILKAN DASHBOARD USER
     // =========================================
 
-    public function index(Request $request): View
-    {
+    public function index(
+        Request $request,
+        PenetapanBeasiswa $penetapanBeasiswa
+    ): View {
+
         $this->periksaRole($request);
 
-        // Mengambil akun yang sedang login
+        // =====================================
+        // AKUN DAN PENGAJUAN SENDIRI
+        // =====================================
+
         $akun = $request->user();
 
-        // Mengambil pengajuan milik akun sendiri
-        $pengajuan = DB::table('pengajuan_beasiswa')
+        $pengajuan = DB::table(
+            'pengajuan_beasiswa'
+        )
             ->where('akun_id', $akun->id)
             ->first();
 
@@ -87,7 +170,7 @@ class DashboardController extends Controller
             ?? 'belum_mengisi';
 
         // =====================================
-        // KETERANGAN STATUS
+        // STATUS ADMINISTRASI
         // =====================================
 
         $daftarStatus = [
@@ -96,50 +179,137 @@ class DashboardController extends Controller
                 'judul' => 'Belum mengajukan',
                 'keterangan' =>
                     'Kamu belum mempunyai pengajuan beasiswa.',
-                'warna' => 'bg-slate-100 text-slate-700',
+                'warna' =>
+                    'bg-slate-100 text-slate-700',
             ],
 
             'draf' => [
                 'judul' => 'Draf tersimpan',
                 'keterangan' =>
                     'Pengajuan belum dikirim untuk diperiksa Admin.',
-                'warna' => 'bg-amber-100 text-amber-800',
+                'warna' =>
+                    'bg-amber-100 text-amber-800',
             ],
 
             'diajukan' => [
                 'judul' => 'Diajukan',
                 'keterangan' =>
                     'Pengajuan sudah dikirim dan menunggu verifikasi Admin.',
-                'warna' => 'bg-blue-100 text-blue-800',
+                'warna' =>
+                    'bg-blue-100 text-blue-800',
             ],
 
             'perlu_perbaikan' => [
                 'judul' => 'Perlu perbaikan',
                 'keterangan' =>
                     'Admin meminta perbaikan pada pengajuanmu.',
-                'warna' => 'bg-amber-100 text-amber-800',
+                'warna' =>
+                    'bg-amber-100 text-amber-800',
             ],
 
             'terverifikasi' => [
                 'judul' => 'Terverifikasi',
                 'keterangan' =>
-                    'Pengajuan lolos pemeriksaan administrasi, bukan berarti sudah diterima.',
-                'warna' => 'bg-emerald-100 text-emerald-800',
+                    'Pengajuan lolos pemeriksaan administrasi. Keputusan penerimaan beasiswa ditampilkan secara terpisah.',
+                'warna' =>
+                    'bg-emerald-100 text-emerald-800',
             ],
 
             'ditolak' => [
                 'judul' => 'Ditolak pada verifikasi',
                 'keterangan' =>
                     'Pengajuan tidak lolos pemeriksaan administrasi.',
-                'warna' => 'bg-red-100 text-red-800',
+                'warna' =>
+                    'bg-red-100 text-red-800',
             ],
         ];
 
         $infoStatus = $daftarStatus[$status] ?? [
             'judul' => 'Status tidak dikenali',
-            'keterangan' => 'Hubungi administrator.',
-            'warna' => 'bg-slate-100 text-slate-700',
+            'keterangan' =>
+                'Hubungi administrator untuk informasi pengajuan.',
+            'warna' =>
+                'bg-slate-100 text-slate-700',
         ];
+
+        // =====================================
+        // MEMBACA HASIL AKHIR DARI ADMIN
+        // =====================================
+        //
+        // Hanya mengambil pengajuan milik akun
+        // yang sedang login.
+        //
+        // Tidak membaca draf sebagai hasil akhir.
+        // PenetapanBeasiswa::hasilUser()
+        // harus menjadi sumber keputusan resmi.
+        // =====================================
+
+        $hasilAkhir = null;
+
+        if (
+            $pengajuan !== null &&
+            Schema::hasTable('penetapan_seleksi') &&
+            Schema::hasTable('penetapan_peserta')
+        ) {
+            $hasilAkhir = $penetapanBeasiswa->hasilUser(
+                (int) $pengajuan->id
+            );
+        }
+
+        $keputusanFinal = $this->keputusanPublik(
+            $hasilAkhir
+        );
+
+        $sudahDiumumkan = $keputusanFinal !== null;
+
+        // =====================================
+        // INFORMASI KEPUTUSAN AKHIR
+        // =====================================
+
+        $daftarKeputusan = [
+
+            'diterima' => [
+                'judul' => 'Diterima',
+                'keterangan' =>
+                    'Selamat! Kamu ditetapkan sebagai penerima beasiswa berdasarkan hasil seleksi yang telah diumumkan oleh Admin.',
+                'warna' =>
+                    'bg-emerald-100 text-emerald-800',
+                'warnaPanel' =>
+                    'border-emerald-200 bg-emerald-50 text-emerald-900',
+            ],
+
+            'cadangan' => [
+                'judul' => 'Cadangan',
+                'keterangan' =>
+                    'Kamu masuk daftar cadangan berdasarkan hasil seleksi yang telah diumumkan. Status ini bukan penerimaan utama.',
+                'warna' =>
+                    'bg-amber-100 text-amber-800',
+                'warnaPanel' =>
+                    'border-amber-200 bg-amber-50 text-amber-900',
+            ],
+
+            'tidak_diterima' => [
+                'judul' => 'Tidak Diterima',
+                'keterangan' =>
+                    'Berdasarkan hasil seleksi akhir yang telah diumumkan, kamu belum ditetapkan sebagai penerima beasiswa.',
+                'warna' =>
+                    'bg-rose-100 text-rose-800',
+                'warnaPanel' =>
+                    'border-rose-200 bg-rose-50 text-rose-900',
+            ],
+        ];
+
+        $infoKeputusan = $sudahDiumumkan
+            ? $daftarKeputusan[$keputusanFinal]
+            : [
+                'judul' => 'Menunggu Pengumuman',
+                'keterangan' =>
+                    'Belum ada keputusan akhir yang diumumkan untuk pengajuanmu. Status Terverifikasi belum berarti Diterima.',
+                'warna' =>
+                    'bg-slate-100 text-slate-700',
+                'warnaPanel' =>
+                    'border-slate-200 bg-slate-50 text-slate-700',
+            ];
 
         // =====================================
         // MEMERIKSA DOKUMEN
@@ -192,8 +362,20 @@ class DashboardController extends Controller
         unset($item);
 
         // =====================================
-        // TAHAPAN SELEKSI
+        // TAHAP 2: FORMULIR DAN BERKAS
         // =====================================
+
+        $formulirSelesai =
+            in_array(
+                $status,
+                [
+                    'diajukan',
+                    'terverifikasi',
+                    'ditolak',
+                ],
+                true
+            ) ||
+            $sudahDiumumkan;
 
         $statusForm = match ($status) {
 
@@ -205,6 +387,15 @@ class DashboardController extends Controller
 
             default => 'Sudah dikirim',
         };
+
+        // =====================================
+        // TAHAP 3: VERIFIKASI ADMIN
+        // =====================================
+
+        $verifikasiSelesai =
+            $status === 'terverifikasi'
+            ||
+            $sudahDiumumkan;
 
         $statusVerifikasi = match ($status) {
 
@@ -219,53 +410,128 @@ class DashboardController extends Controller
             default => 'Belum dimulai',
         };
 
+        // Keputusan yang sudah resmi diumumkan
+        // menunjukkan peserta sebelumnya
+        // sudah memenuhi tahapan seleksi.
+
+        if (
+            $sudahDiumumkan &&
+            $statusVerifikasi !== 'Terverifikasi'
+        ) {
+            $statusVerifikasi =
+                'Selesai pada proses seleksi';
+        }
+
+        // =====================================
+        // TAHAP 4: PERHITUNGAN AHP-WASPAS
+        // =====================================
+        //
+        // Jika keputusan sudah diumumkan,
+        // berarti peserta telah melewati proses
+        // penilaian WASPAS yang diarsipkan.
+        //
+        // Jika belum diumumkan, jangan
+        // mengklaim proses sudah selesai.
+        // =====================================
+
+        if ($sudahDiumumkan) {
+
+            $statusWaspas =
+                'Selesai diproses dan ditetapkan';
+
+        } elseif ($status === 'terverifikasi') {
+
+            $statusWaspas =
+                'Menunggu hasil seleksi resmi';
+
+        } else {
+
+            $statusWaspas =
+                'Belum selesai';
+        }
+
+        // =====================================
+        // TAHAP 5: PENGUMUMAN PENERIMA
+        // =====================================
+
+        $statusPengumuman = $sudahDiumumkan
+            ? $infoKeputusan['judul']
+            : 'Belum diumumkan';
+
+        // =====================================
+        // DATA TAHAPAN SELEKSI
+        // =====================================
+        //
+        // "selesai" digunakan oleh Blade
+        // untuk menampilkan centang hijau.
+        //
+        // "hasil" menandai tahap keputusan
+        // akhir yang sudah dipublikasikan.
+        // =====================================
+
         $tahapan = [
 
             [
                 'nama' => 'Akun dibuat',
                 'status' => 'Selesai',
+                'selesai' => true,
+                'hasil' => false,
             ],
 
             [
                 'nama' => 'Formulir dan berkas',
                 'status' => $statusForm,
+                'selesai' => $formulirSelesai,
+                'hasil' => false,
             ],
 
             [
                 'nama' => 'Verifikasi Admin',
                 'status' => $statusVerifikasi,
+                'selesai' => $verifikasiSelesai,
+                'hasil' => false,
             ],
 
             [
                 'nama' => 'Perhitungan AHP–WASPAS',
-                'status' => 'Belum ditampilkan',
+                'status' => $statusWaspas,
+                'selesai' => $sudahDiumumkan,
+                'hasil' => false,
             ],
 
             [
                 'nama' => 'Pengumuman penerima',
-                'status' => 'Belum diumumkan',
+                'status' => $statusPengumuman,
+                'selesai' => $sudahDiumumkan,
+                'hasil' => $sudahDiumumkan,
             ],
         ];
 
         // =====================================
-        // MENGIRIM DATA KE HALAMAN DASHBOARD
+        // KIRIM DATA KE DASHBOARD USER
         // =====================================
 
-        return view('user.dashboard', compact(
-            'akun',
-            'pengajuan',
-            'status',
-            'infoStatus',
-            'dokumen',
-            'jumlahWajib',
-            'jumlahTerunggah',
-            'tahapan'
-        ));
+        return view(
+            'user.dashboard',
+            compact(
+                'akun',
+                'pengajuan',
+                'status',
+                'infoStatus',
+                'dokumen',
+                'jumlahWajib',
+                'jumlahTerunggah',
+                'tahapan',
+                'hasilAkhir',
+                'keputusanFinal',
+                'sudahDiumumkan',
+                'infoKeputusan'
+            )
+        );
     }
 
     // =========================================
     // DOWNLOAD DOKUMEN USER
-    // VERSI PERBAIKAN
     // =========================================
 
     public function unduh(
@@ -273,10 +539,8 @@ class DashboardController extends Controller
         string $jenis
     ): StreamedResponse {
 
-        // Hanya User yang boleh mengunduh
         $this->periksaRole($request);
 
-        // Jenis dokumen yang diizinkan
         $jenisDiizinkan = [
             'kk',
             'penghasilan',
@@ -284,31 +548,40 @@ class DashboardController extends Controller
             'sertifikat',
         ];
 
-        if (!in_array($jenis, $jenisDiizinkan, true)) {
-            abort(404);
-        }
+        abort_unless(
+            in_array(
+                $jenis,
+                $jenisDiizinkan,
+                true
+            ),
+            404
+        );
 
-        // Mengambil ID akun yang sedang login
         $idAkun = (int) $request->user()->id;
 
-        // Memastikan pengajuan milik User tersedia
-        $punyaPengajuan = DB::table('pengajuan_beasiswa')
+        $punyaPengajuan = DB::table(
+            'pengajuan_beasiswa'
+        )
             ->where('akun_id', $idAkun)
             ->exists();
 
-        abort_unless($punyaPengajuan, 404);
+        abort_unless(
+            $punyaPengajuan,
+            404
+        );
 
-        // Mengambil lokasi dokumen asli
         $lokasi = $this->cariDokumen(
             $idAkun,
             $jenis
         );
 
         if ($lokasi === null) {
-            abort(404, 'Berkas belum tersimpan.');
+            abort(
+                404,
+                'Berkas belum tersimpan.'
+            );
         }
 
-        // Mengambil ekstensi dokumen
         $ext = strtolower(
             pathinfo(
                 $lokasi,
@@ -316,44 +589,45 @@ class DashboardController extends Controller
             )
         );
 
-        // =====================================
-        // MEMERIKSA FORMAT FILE
-        // =====================================
-
         $mimeDiizinkan = [
             'pdf' => 'application/pdf',
             'jpg' => 'image/jpeg',
             'png' => 'image/png',
         ];
 
-        if (!isset($mimeDiizinkan[$ext])) {
-            abort(404, 'Format berkas tidak didukung.');
-        }
+        abort_unless(
+            isset($mimeDiizinkan[$ext]),
+            404,
+            'Format berkas tidak didukung.'
+        );
 
-        // Memeriksa isi file sebenarnya
-        // agar HTML atau error PHP tidak
-        // dikirim sebagai gambar JPG.
+        // =====================================
+        // VALIDASI MIME ASLI
+        // =====================================
 
         $mimeAsli = (
             new \finfo(FILEINFO_MIME_TYPE)
         )->file($lokasi);
 
-        if ($mimeAsli !== $mimeDiizinkan[$ext]) {
-
+        if (
+            $mimeAsli !==
+            $mimeDiizinkan[$ext]
+        ) {
             abort(
                 422,
-                'Isi berkas di penyimpanan tidak sesuai formatnya. Jangan hapus berkas asli.'
+                'Isi berkas tidak sesuai formatnya. Jangan hapus berkas asli.'
             );
         }
 
         // =====================================
-        // MEMERIKSA FILE GAMBAR
+        // VALIDASI FILE GAMBAR
         // =====================================
 
-        // Untuk JPG dan PNG, pastikan file
-        // masih dikenali sebagai gambar.
-
-        if (in_array($ext, ['jpg', 'png'], true)) {
+        if (in_array(
+            $ext,
+            ['jpg', 'png'],
+            true
+        )) {
 
             $informasiGambar = @getimagesize(
                 $lokasi
@@ -369,7 +643,7 @@ class DashboardController extends Controller
         }
 
         // =====================================
-        // MENGAMBIL UKURAN FILE ASLI
+        // MENGAMBIL UKURAN BERKAS
         // =====================================
 
         clearstatcache(true, $lokasi);
@@ -380,7 +654,6 @@ class DashboardController extends Controller
             $ukuran === false ||
             $ukuran < 1
         ) {
-
             abort(
                 404,
                 'Ukuran berkas tidak valid.'
@@ -388,20 +661,12 @@ class DashboardController extends Controller
         }
 
         // =====================================
-        // PERBAIKAN UTAMA:
-        // MENGIRIM FILE SECARA BERSIH
+        // DOWNLOAD AMAN MILIK USER
         // =====================================
-
-        // Menggunakan streamDownload agar
-        // file dikirim langsung sebagai data,
-        // tanpa menampilkan halaman Blade.
 
         return response()->streamDownload(
 
             function () use ($lokasi): void {
-
-                // Menghapus keluaran tambahan
-                // sebelum mengirim isi dokumen.
 
                 while (ob_get_level() > 0) {
 
@@ -413,14 +678,11 @@ class DashboardController extends Controller
                     }
                 }
 
-                // Mengirim isi file asli
                 readfile($lokasi);
             },
 
-            // Nama file hasil download
             $jenis . '.' . $ext,
 
-            // Header download
             [
                 'Content-Type' =>
                     $mimeDiizinkan[$ext],

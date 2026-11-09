@@ -6,16 +6,14 @@ use Illuminate\Support\Facades\Route;
 
 /*
 |--------------------------------------------------------------------------
-| PEMULIHAN KATA SANDI USER
+| LUPA KATA SANDI - BEASISWA CERDAS
 |--------------------------------------------------------------------------
 |
-| Semua route menggunakan middleware web:
-| - Session
-| - Cookie
-| - Proteksi CSRF
+| Tahap 1: Meminta kode melalui Gmail
+| Tahap 2: Memverifikasi kode enam digit
+| Tahap 3: Menyimpan kata sandi baru
 |
-| Tidak mengubah route login, registrasi,
-| Dashboard Admin, AHP, WASPAS, atau User.
+| Tidak mengubah route Admin atau User.
 |
 */
 
@@ -36,6 +34,16 @@ Route::post(
 )
     ->middleware('throttle:10,1')
     ->name('password.send');
+
+Route::post(
+    '/lupa-kata-sandi/verifikasi-kode',
+    [
+        LupaPasswordController::class,
+        'verifikasiKode',
+    ]
+)
+    ->middleware('throttle:10,1')
+    ->name('password.verify');
 
 Route::post(
     '/lupa-kata-sandi/reset',

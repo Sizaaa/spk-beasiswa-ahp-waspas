@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Mail\Message;
+use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
@@ -22,56 +23,153 @@ class LupaPasswordController extends Controller
     private const MAKSIMAL_KESALAHAN_KODE = 5;
     private const JEDA_KIRIM_DETIK = 60;
 
-    // =========================================
-    // HALAMAN LUPA KATA SANDI
-    // =========================================
+    /*
+    |--------------------------------------------------------------------------
+    | UTILITAS
+    |--------------------------------------------------------------------------
+    */
 
-    public function form(Request $request): View
+    private function emailSesi(Request $request): string
     {
-        return view('auth.lupa-password', [
-            'emailTerkirim' => $request->session()
-                ->get('reset_password_email'),
-        ]);
-    }
+        $email = $request->session()->get(
+            'reset_password_email',
+            ''
+        );
 
-    // =========================================
-    // MEMBUAT KUNCI PEMBATAS PERCOBAAN
-    // =========================================
+        return is_string($email) ? $email : '';
+    }
 
     private function kunciEmail(string $email): string
     {
-        return 'reset-email:'
-            . hash('sha256', mb_strtolower($email));
+        return 'reset-email:' . hash(
+            'sha256',
+            mb_strtolower($email)
+        );
     }
 
     private function kunciIp(Request $request): string
     {
-        return 'reset-ip:'
-            . hash('sha256', (string) $request->ip());
+        return 'reset-ip:' . hash(
+            'sha256',
+            (string) $request->ip()
+        );
     }
 
     private function kunciVerifikasi(
         Request $request,
         string $email
     ): string {
-        return 'reset-verifikasi:'
-            . hash(
-                'sha256',
-                mb_strtolower($email)
+        return 'reset-verifikasi:' . hash(
+            'sha256',
+            mb_strtolower($email)
                 . '|'
                 . (string) $request->ip()
-            );
+        );
     }
 
-    // =========================================
-    // KIRIM KODE VERIFIKASI KE EMAIL
-    // =========================================
+    private function buktiVerifikasi(
+        Request $request
+    ): ?array {
+        $bukti = $request->session()->get(
+            'reset_password_verified'
+        );
+
+        if (!is_array($bukti)) {
+            return null;
+        }
+
+        if (
+            !isset(
+                $bukti['akun_id'],
+                $bukti['kode_hash'],
+                $bukti['expires_at']
+            )
+        ) {
+            return null;
+        }
+
+        if (
+            !is_numeric($bukti['akun_id'])
+            || !is_string($bukti['kode_hash'])
+            || !is_numeric($bukti['expires_at'])
+            || (int) $bukti['expires_at'] <= now()->timestamp
+        ) {
+            return null;
+        }
+
+        return $bukti;
+    }
+
+    private function pesanKodeTidakValid(): string
+    {
+        return 'Kode salah, sudah kedaluwarsa, atau '
+            . 'tidak berlaku lagi. Silakan meminta '
+            . 'kode baru jika diperlukan.';
+    }
+
+    /*
+    |--------------------------------------------------------------------------
+    | TAMPILKAN HALAMAN
+    |--------------------------------------------------------------------------
+    |
+    | Tahap 1: email
+    | Tahap 2: kode
+    | Tahap 3: password
+    |
+    | Tahap 3 hanya tersedia setelah verifikasi
+    | kode berhasil di sisi server.
+    |
+    */
+
+    public function form(Request $request): View
+    {
+        $email = $this->emailSesi($request);
+        $tahap = 'email';
+
+        if ($email !== '') {
+            $tahap = 'kode';
+
+            $bukti = $this->buktiVerifikasi($request);
+
+            if ($bukti !== null) {
+                $akun = DB::table('akun')
+                    ->where('email', $email)
+                    ->where('role', 'user')
+                    ->first(['id']);
+
+                if (
+                    $akun !== null
+                    && (int) $akun->id
+                        === (int) $bukti['akun_id']
+                ) {
+                    $tahap = 'password';
+                } else {
+                    $request->session()->forget(
+                        'reset_password_verified'
+                    );
+                }
+            } else {
+                $request->session()->forget(
+                    'reset_password_verified'
+                );
+            }
+        }
+
+        return view('auth.lupa-password', [
+            'emailTerkirim' => $email,
+            'tahap' => $tahap,
+        ]);
+    }
+
+    /*
+    |--------------------------------------------------------------------------
+    | TAHAP 1: KIRIM KODE KE GMAIL TERDAFTAR
+    |--------------------------------------------------------------------------
+    */
 
     public function kirimKode(
         Request $request
     ): RedirectResponse {
-
-        // Normalisasi email.
         $email = mb_strtolower(
             trim((string) $request->input('email', ''))
         );
@@ -93,12 +191,10 @@ class LupaPasswordController extends Controller
             [
                 'email.required' =>
                     'Alamat Gmail wajib diisi.',
-
                 'email.email' =>
                     'Format alamat Gmail tidak valid.',
-
                 'email.ends_with' =>
-                    'Gunakan alamat @gmail.com yang terdaftar.',
+                    'Gunakan Gmail yang terdaftar.',
             ]
         );
 
@@ -107,25 +203,19 @@ class LupaPasswordController extends Controller
         $kunciEmail = $this->kunciEmail($email);
         $kunciIp = $this->kunciIp($request);
 
-        // =====================================
-        // PEMBATASAN PERMINTAAN
-        // =====================================
-
         if (
             RateLimiter::tooManyAttempts(
                 $kunciEmail,
                 1
             )
         ) {
-
             return back()
                 ->withErrors([
                     'email' =>
-                        'Tunggu sekitar 1 menit sebelum meminta kode baru.',
+                        'Tunggu sekitar 1 menit sebelum '
+                        . 'meminta kode baru.',
                 ])
-                ->withInput([
-                    'email' => $email,
-                ]);
+                ->withInput(['email' => $email]);
         }
 
         if (
@@ -134,12 +224,11 @@ class LupaPasswordController extends Controller
                 5
             )
         ) {
-
-            return back()
-                ->withErrors([
-                    'email' =>
-                        'Terlalu banyak permintaan. Coba lagi nanti.',
-                ]);
+            return back()->withErrors([
+                'email' =>
+                    'Terlalu banyak permintaan. '
+                    . 'Silakan coba lagi nanti.',
+            ]);
         }
 
         RateLimiter::hit(
@@ -152,48 +241,31 @@ class LupaPasswordController extends Controller
             3600
         );
 
-        // =====================================
-        // SIMPAN EMAIL PADA SESI
-        // =====================================
-        //
-        // Email disimpan walaupun akun tidak
-        // ditemukan supaya halaman tidak
-        // mengungkap keberadaan suatu akun.
-        // =====================================
+        // Setiap pengiriman kode baru
+        // membatalkan bukti verifikasi lama.
+        $request->session()->forget(
+            'reset_password_verified'
+        );
 
         $request->session()->put(
             'reset_password_email',
             $email
         );
 
-        // =====================================
-        // HANYA AKUN USER BIASA
-        // =====================================
-        //
-        // Akun Admin tidak boleh dipulihkan
-        // melalui formulir publik ini.
-        // =====================================
-
+        // Hanya akun User biasa yang boleh
+        // menggunakan pemulihan password publik.
         $akun = DB::table('akun')
             ->where('email', $email)
             ->where('role', 'user')
-            ->first([
-                'id',
-                'email',
-            ]);
+            ->first(['id', 'email']);
 
         if ($akun !== null) {
-
-            // Kode 6 digit dihasilkan secara
-            // acak menggunakan random_int().
             $kode = (string) random_int(
                 100000,
                 999999
             );
 
-            // Hanya hash kode yang disimpan.
             $hashKode = Hash::make($kode);
-
             $sekarang = now();
 
             DB::table('reset_kode_akun')
@@ -213,37 +285,22 @@ class LupaPasswordController extends Controller
                     ]
                 );
 
-            // =================================
-            // KIRIM EMAIL
-            // =================================
-            //
-            // Dengan MAIL_MAILER=smtp:
-            //   dikirim ke server SMTP.
-            //
-            // Dengan MAIL_MAILER=log:
-            //   masuk ke log Laravel, bukan
-            //   ke inbox Gmail sungguhan.
-            //
-            // Untuk testing email formalitas,
-            // gunakan Mailpit.
-            // =================================
-
             try {
-
                 $isiPesan =
                     "Halo,\n\n"
-                    . "Kami menerima permintaan untuk "
-                    . "mengatur ulang kata sandi akun "
-                    . "Beasiswa Cerdas.\n\n"
+                    . "Kami menerima permintaan "
+                    . "pemulihan akun Beasiswa Cerdas.\n\n"
                     . "Kode verifikasi kamu:\n\n"
-                    . $kode . "\n\n"
-                    . "Kode berlaku selama "
+                    . $kode
+                    . "\n\nKode ini berlaku "
                     . self::MASA_BERLAKU_MENIT
-                    . " menit dan hanya dapat digunakan "
-                    . "satu kali.\n\n"
+                    . " menit dan hanya bisa dipakai "
+                    . "untuk satu proses reset password.\n\n"
+                    . "Jangan berikan kode kepada "
+                    . "siapa pun.\n\n"
                     . "Jika kamu tidak meminta "
-                    . "pengaturan ulang kata sandi, "
-                    . "abaikan email ini.\n\n"
+                    . "pemulihan akun, abaikan "
+                    . "email ini.\n\n"
                     . "Beasiswa Cerdas";
 
                 Mail::raw(
@@ -251,21 +308,15 @@ class LupaPasswordController extends Controller
                     static function (
                         Message $pesan
                     ) use ($email): void {
-
                         $pesan->to($email);
 
                         $pesan->subject(
-                            'Kode Verifikasi Lupa Kata Sandi - Beasiswa Cerdas'
+                            'Kode Verifikasi Lupa Kata Sandi '
+                            . '- Beasiswa Cerdas'
                         );
                     }
                 );
-
             } catch (Throwable $exception) {
-
-                // Jika pengiriman gagal,
-                // batalkan kode yang baru dibuat.
-                // Kondisi hash mencegah kode
-                // yang lebih baru ikut terhapus.
                 DB::table('reset_kode_akun')
                     ->where(
                         'akun_id',
@@ -277,9 +328,10 @@ class LupaPasswordController extends Controller
                     )
                     ->delete();
 
-                // Jangan menuliskan OTP ke log.
+                // Jangan masukkan OTP
+                // atau password ke log error.
                 Log::warning(
-                    'Pengiriman email reset password gagal.',
+                    'Gagal mengirim email reset password.',
                     [
                         'jenis_error' =>
                             get_class($exception),
@@ -288,35 +340,41 @@ class LupaPasswordController extends Controller
             }
         }
 
+        // Respons tidak membocorkan
+        // apakah Gmail terdaftar atau tidak.
         return redirect()
             ->route('password.forgot')
             ->with(
                 'sukses',
-                'Jika Gmail tersebut terdaftar, kode verifikasi telah dikirim. Periksa inbox atau inbox pengujian Mailpit.'
+                'Jika Gmail terdaftar, kode verifikasi '
+                . 'telah diproses. Periksa inbox email '
+                . 'atau log pengujian sesuai '
+                . 'konfigurasi aplikasi.'
             );
     }
 
-    // =========================================
-    // VALIDASI KODE DAN RESET PASSWORD
-    // =========================================
+    /*
+    |--------------------------------------------------------------------------
+    | TAHAP 2: VERIFIKASI KODE TERLEBIH DAHULU
+    |--------------------------------------------------------------------------
+    |
+    | Password baru belum diminta di tahap ini.
+    | Kode diperiksa dari hash di MySQL.
+    |
+    */
 
-    public function resetPassword(
+    public function verifikasiKode(
         Request $request
     ): RedirectResponse {
+        $email = $this->emailSesi($request);
 
-        $email = $request->session()
-            ->get('reset_password_email');
-
-        if (
-            !is_string($email) ||
-            $email === ''
-        ) {
-
+        if ($email === '') {
             return redirect()
                 ->route('password.forgot')
                 ->withErrors([
                     'email' =>
-                        'Masukkan Gmail terlebih dahulu untuk meminta kode verifikasi.',
+                        'Masukkan Gmail dan minta kode '
+                        . 'terlebih dahulu.',
                 ]);
         }
 
@@ -326,37 +384,12 @@ class LupaPasswordController extends Controller
                     'required',
                     'digits:6',
                 ],
-
-                'password' => [
-                    'required',
-                    'string',
-                    'confirmed',
-                    Password::min(10)
-                        ->max(72)
-                        ->mixedCase()
-                        ->numbers(),
-                ],
-
-                'password_confirmation' => [
-                    'required',
-                    'string',
-                ],
             ],
             [
                 'kode.required' =>
                     'Kode verifikasi wajib diisi.',
-
                 'kode.digits' =>
-                    'Kode verifikasi harus 6 digit.',
-
-                'password.required' =>
-                    'Kata sandi baru wajib diisi.',
-
-                'password.confirmed' =>
-                    'Konfirmasi kata sandi tidak cocok.',
-
-                'password_confirmation.required' =>
-                    'Ulangi kata sandi baru.',
+                    'Kode harus terdiri dari 6 digit.',
             ]
         );
 
@@ -371,12 +404,11 @@ class LupaPasswordController extends Controller
                 10
             )
         ) {
-
-            return back()
-                ->withErrors([
-                    'kode' =>
-                        'Terlalu banyak percobaan verifikasi. Coba lagi nanti.',
-                ]);
+            return back()->withErrors([
+                'kode' =>
+                    'Terlalu banyak percobaan. '
+                    . 'Coba lagi nanti.',
+            ]);
         }
 
         RateLimiter::hit(
@@ -384,39 +416,22 @@ class LupaPasswordController extends Controller
             600
         );
 
-        // Cari hanya akun User sesuai Gmail
-        // yang dimasukkan pada tahap pertama.
         $akun = DB::table('akun')
             ->where('email', $email)
             ->where('role', 'user')
             ->first(['id']);
 
         if ($akun === null) {
-
-            return back()
-                ->withErrors([
-                    'kode' =>
-                        'Kode salah atau sudah kedaluwarsa. Silakan meminta kode baru.',
-                ]);
+            return back()->withErrors([
+                'kode' => $this->pesanKodeTidakValid(),
+            ]);
         }
 
-        // =====================================
-        // VERIFIKASI SECARA TRANSAKSI
-        // =====================================
-        //
-        // lockForUpdate mencegah dua request
-        // memakai OTP yang sama bersamaan.
-        // =====================================
-
+        // Mengunci baris OTP agar percobaan
+        // salah dihitung secara konsisten.
         $hasil = DB::transaction(
-            function () use (
-                $akun,
-                $data
-            ): string {
-
-                $baris = DB::table(
-                    'reset_kode_akun'
-                )
+            function () use ($akun, $data): ?array {
+                $baris = DB::table('reset_kode_akun')
                     ->where(
                         'akun_id',
                         (int) $akun->id
@@ -425,83 +440,234 @@ class LupaPasswordController extends Controller
                     ->first();
 
                 if ($baris === null) {
-                    return 'tidak_valid';
+                    return null;
                 }
 
-                // Periksa masa berlaku.
+                $kedaluwarsa = Carbon::parse(
+                    $baris->kedaluwarsa_pada
+                );
+
                 if (
-                    now()->greaterThan(
-                        \Illuminate\Support\Carbon::parse(
-                            $baris->kedaluwarsa_pada
-                        )
+                    now()->greaterThanOrEqualTo(
+                        $kedaluwarsa
                     )
                 ) {
-
                     DB::table('reset_kode_akun')
                         ->where('id', $baris->id)
                         ->delete();
 
-                    return 'tidak_valid';
+                    return null;
                 }
 
-                // Sudah terlalu banyak salah.
                 if (
                     (int) $baris->percobaan >=
                     self::MAKSIMAL_KESALAHAN_KODE
                 ) {
-
                     DB::table('reset_kode_akun')
                         ->where('id', $baris->id)
                         ->delete();
 
-                    return 'tidak_valid';
+                    return null;
                 }
 
-                // Kode tidak sesuai.
                 if (
                     !Hash::check(
                         $data['kode'],
                         $baris->kode_hash
                     )
                 ) {
-
-                    $jumlahKesalahan =
+                    $jumlah =
                         (int) $baris->percobaan + 1;
 
                     if (
-                        $jumlahKesalahan >=
+                        $jumlah >=
                         self::MAKSIMAL_KESALAHAN_KODE
                     ) {
-
                         DB::table('reset_kode_akun')
                             ->where('id', $baris->id)
                             ->delete();
-
                     } else {
-
                         DB::table('reset_kode_akun')
                             ->where('id', $baris->id)
                             ->update([
-                                'percobaan' =>
-                                    $jumlahKesalahan,
+                                'percobaan' => $jumlah,
                                 'updated_at' => now(),
                             ]);
                     }
 
-                    return 'tidak_valid';
+                    return null;
                 }
 
-                // =================================
-                // KODE COCOK
-                // =================================
-                //
-                // Password hanya berubah setelah
-                // kode email berhasil diverifikasi.
-                //
-                // Mengikuti kolom lama password_hash.
-                // =================================
+                // Bukti verifikasi terikat
+                // ke akun dan kode OTP saat ini.
+                return [
+                    'akun_id' => (int) $akun->id,
+                    'kode_hash' =>
+                        (string) $baris->kode_hash,
+                    'expires_at' =>
+                        $kedaluwarsa->timestamp,
+                ];
+            }
+        );
 
-                $jumlahDiubah = DB::table('akun')
+        if ($hasil === null) {
+            return back()->withErrors([
+                'kode' => $this->pesanKodeTidakValid(),
+            ]);
+        }
+
+        // Regenerasi ID sesi setelah
+        // kode terbukti benar.
+        $request->session()->regenerate();
+
+        $request->session()->put(
+            'reset_password_verified',
+            $hasil
+        );
+
+        RateLimiter::clear($kunciPercobaan);
+
+        return redirect()
+            ->route('password.forgot')
+            ->with(
+                'sukses',
+                'Kode verifikasi berhasil. '
+                . 'Sekarang buat kata sandi baru.'
+            );
+    }
+
+    /*
+    |--------------------------------------------------------------------------
+    | TAHAP 3: SIMPAN PASSWORD BARU
+    |--------------------------------------------------------------------------
+    |
+    | Tidak menerima kode OTP dari form ini.
+    | Menggunakan bukti verifikasi yang
+    | tersimpan dalam sesi Laravel.
+    |
+    */
+
+    public function resetPassword(
+        Request $request
+    ): RedirectResponse {
+        $email = $this->emailSesi($request);
+        $bukti = $this->buktiVerifikasi($request);
+
+        if ($email === '' || $bukti === null) {
+            $request->session()->forget(
+                'reset_password_verified'
+            );
+
+            return redirect()
+                ->route('password.forgot')
+                ->withErrors([
+                    'kode' =>
+                        'Verifikasi kode terlebih dahulu. '
+                        . 'Jika masa berlaku habis, '
+                        . 'minta kode baru.',
+                ]);
+        }
+
+        $data = $request->validate(
+            [
+                'password' => [
+                    'required',
+                    'string',
+                    'confirmed',
+                    Password::min(10)
+                        ->max(72)
+                        ->mixedCase()
+                        ->numbers(),
+                ],
+                'password_confirmation' => [
+                    'required',
+                    'string',
+                ],
+            ],
+            [
+                'password.required' =>
+                    'Kata sandi baru wajib diisi.',
+                'password.confirmed' =>
+                    'Konfirmasi kata sandi tidak cocok.',
+                'password_confirmation.required' =>
+                    'Ulangi kata sandi baru.',
+            ]
+        );
+
+        $akun = DB::table('akun')
+            ->where('email', $email)
+            ->where('role', 'user')
+            ->first(['id']);
+
+        if (
+            $akun === null
+            || (int) $akun->id !==
+                (int) $bukti['akun_id']
+        ) {
+            $request->session()->forget(
+                'reset_password_verified'
+            );
+
+            return redirect()
+                ->route('password.forgot')
+                ->withErrors([
+                    'kode' =>
+                        'Sesi verifikasi tidak valid. '
+                        . 'Silakan meminta kode baru.',
+                ]);
+        }
+
+        $hasil = DB::transaction(
+            function () use (
+                $akun,
+                $bukti,
+                $data
+            ): bool {
+                $baris = DB::table('reset_kode_akun')
+                    ->where(
+                        'akun_id',
+                        (int) $akun->id
+                    )
+                    ->lockForUpdate()
+                    ->first();
+
+                if ($baris === null) {
+                    return false;
+                }
+
+                // Bukti verifikasi harus
+                // berasal dari OTP yang sama.
+                if (
+                    !hash_equals(
+                        (string) $baris->kode_hash,
+                        (string) $bukti['kode_hash']
+                    )
+                ) {
+                    return false;
+                }
+
+                if (
+                    now()->greaterThanOrEqualTo(
+                        Carbon::parse(
+                            $baris->kedaluwarsa_pada
+                        )
+                    )
+                ) {
+                    DB::table('reset_kode_akun')
+                        ->where('id', $baris->id)
+                        ->delete();
+
+                    return false;
+                }
+
+                if (
+                    (int) $baris->percobaan >=
+                    self::MAKSIMAL_KESALAHAN_KODE
+                ) {
+                    return false;
+                }
+
+                $berubah = DB::table('akun')
                     ->where(
                         'id',
                         (int) $akun->id
@@ -514,40 +680,47 @@ class LupaPasswordController extends Controller
                             ),
                     ]);
 
-                if ($jumlahDiubah !== 1) {
-                    return 'tidak_valid';
+                if ($berubah !== 1) {
+                    return false;
                 }
 
-                // Hapus OTP sesudah digunakan.
+                // OTP hanya berlaku sekali.
                 DB::table('reset_kode_akun')
                     ->where('id', $baris->id)
                     ->delete();
 
-                return 'berhasil';
+                return true;
             }
         );
 
-        if ($hasil !== 'berhasil') {
+        if (!$hasil) {
+            $request->session()->forget(
+                'reset_password_verified'
+            );
 
-            return back()
+            return redirect()
+                ->route('password.forgot')
                 ->withErrors([
                     'kode' =>
-                        'Kode salah, sudah digunakan, atau sudah kedaluwarsa. Silakan meminta kode baru jika diperlukan.',
+                        'Verifikasi telah kedaluwarsa '
+                        . 'atau kode sudah tidak berlaku. '
+                        . 'Silakan meminta kode baru.',
                 ]);
         }
 
-        // =====================================
-        // RESET BERHASIL
-        // =====================================
-
-        RateLimiter::clear($kunciPercobaan);
-
-        $request->session()->forget(
-            'reset_password_email'
+        // Bersihkan proses reset.
+        RateLimiter::clear(
+            $this->kunciVerifikasi(
+                $request,
+                $email
+            )
         );
 
-        // Mengakhiri sesi saat ini supaya
-        // masuk kembali dengan password baru.
+        $request->session()->forget([
+            'reset_password_email',
+            'reset_password_verified',
+        ]);
+
         if (Auth::check()) {
             Auth::logout();
         }
@@ -559,7 +732,9 @@ class LupaPasswordController extends Controller
             ->route('login')
             ->with(
                 'sukses',
-                'Kata sandi berhasil diperbarui. Silakan masuk menggunakan kata sandi baru.'
+                'Kata sandi berhasil diperbarui. '
+                . 'Silakan login menggunakan '
+                . 'kata sandi baru.'
             );
     }
 }

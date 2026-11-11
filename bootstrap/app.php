@@ -13,8 +13,8 @@ return Application::configure(basePath: dirname(__DIR__))
         commands: __DIR__ . '/../routes/console.php',
         health: '/up',
 
-        // Route tambahan pemulihan password.
-        // Seluruh routes/web.php tetap dipertahankan.
+        // Memuat route Lupa Kata Sandi
+        // tanpa mengganti routes/web.php.
         then: function (): void {
             Route::middleware('web')
                 ->group(

@@ -36,7 +36,7 @@
 
             <div>
                 <p class="bc-auth-kicker">
-                    ✦ PORTAL BEASISWA CERDAS
+                    ✦ SISTEM BEASISWA CERDAS
                 </p>
 
                 <h1 class="bc-auth-side-title">

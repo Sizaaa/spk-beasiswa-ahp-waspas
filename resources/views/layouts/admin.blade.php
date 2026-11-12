@@ -16,7 +16,7 @@
     >
 
     <title>
-        @yield('title', 'Panel Admin - Beasiswa Cerdas')
+        @yield('title', 'Administrasi Beasiswa - Beasiswa Cerdas')
     </title>
 
     <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
@@ -687,7 +687,7 @@
                     </a>
 
                     <p class="mt-2 text-xs text-emerald-200">
-                        Panel Administrator
+                        Administrasi Beasiswa
                     </p>
                 </div>
 
@@ -927,7 +927,7 @@
                                    uppercase tracking-widest
                                    text-emerald-700"
                         >
-                            PANEL ADMINISTRATOR
+                            ADMINISTRASI BEASISWA
                         </p>
 
                         <h1

@@ -48,7 +48,7 @@
 
             <span class="block text-xs
                          font-normal text-slate-500">
-                Portal User
+                Layanan Beasiswa
             </span>
         </a>
 

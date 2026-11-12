@@ -5,6 +5,79 @@
 @section('judul-admin', 'Dashboard Seleksi')
 @section('deskripsi-admin', 'Ringkasan pengajuan dan data alternatif beasiswa.')
 
+{{-- 
+    PERBAIKAN KONSISTENSI STATUS
+
+    Mengikuti tampilan badge pada halaman
+    Verifikasi Pengajuan.
+
+    Tidak mengubah CSS global maupun fitur.
+--}}
+
+@push('styles')
+<style>
+
+    /* =====================================
+       BADGE STATUS DASHBOARD ADMIN
+       ===================================== */
+
+    .bc-status {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        gap: 0;
+        padding: 6px 12px;
+        border-radius: 99px;
+        font-size: 12px;
+        font-weight: 750;
+        line-height: 1.5;
+        white-space: nowrap;
+    }
+
+    /* 
+       Samakan dengan badge Verifikasi
+       yang tidak menggunakan titik.
+    */
+
+    .bc-status::before {
+        display: none;
+        content: none;
+    }
+
+    /* Menunggu Verifikasi */
+
+    .bc-status.bc-status--diajukan,
+    .bc-status.bc-status--menunggu,
+    .bc-status.bc-status--menunggu_verifikasi {
+        background: #FFF2D4;
+        color: #875719;
+    }
+
+    /* Terverifikasi */
+
+    .bc-status.bc-status--terverifikasi {
+        background: #DEF5E9;
+        color: #126048;
+    }
+
+    /* Perlu Perbaikan */
+
+    .bc-status.bc-status--perlu_perbaikan {
+        background: #FFF1DD;
+        color: #925813;
+    }
+
+    /* Ditolak */
+
+    .bc-status.bc-status--ditolak {
+        background: #FFEBEE;
+        color: #982E3C;
+    }
+
+</style>
+@endpush
+
+
 @section('admin-content')
 
 @php
@@ -161,9 +234,14 @@
                                 </td>
 
                                 <td>
-                                    {{ $item->diajukan_pada
-                                        ? date('d-m-Y H:i', strtotime($item->diajukan_pada))
-                                        : '-' }}
+                                    {{
+                                        $item->diajukan_pada
+                                            ? date(
+                                                'd/m/Y H:i',
+                                                strtotime($item->diajukan_pada)
+                                            )
+                                            : '-'
+                                    }}
                                 </td>
 
                                 <td>

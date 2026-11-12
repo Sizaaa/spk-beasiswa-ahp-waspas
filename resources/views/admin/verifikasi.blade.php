@@ -98,13 +98,21 @@
         line-height: 1.6;
     }
 
-    .vra-badge {
+    /* ========================================
+       BADGE STATUS
+       Bentuk kotak mengikuti Dashboard Admin
+    ======================================== */
+
+    .vra-page .vra-badge {
         display: inline-flex;
         align-items: center;
+        justify-content: center;
         padding: 6px 12px;
-        border-radius: 99px;
+        border-radius: 8px !important;
         font-size: 12px;
         font-weight: 750;
+        line-height: 1.5;
+        white-space: nowrap;
     }
 
     .vra-status-diajukan {
@@ -570,11 +578,45 @@
 @section('admin-content')
 
 @php
+    /*
+     |------------------------------------------
+     | STATISTIK PENGAJUAN
+     |------------------------------------------
+     | Menggunakan struktur kartu yang sama
+     | dengan Dashboard Seleksi.
+     |
+     | Data tetap berasal dari $statistik.
+     */
+
     $statistikKartu = [
-        ['Seluruh Pengajuan', (int) $statistik->total],
-        ['Menunggu Verifikasi', (int) $statistik->menunggu],
-        ['Terverifikasi', (int) $statistik->terverifikasi],
-        ['Perlu Perbaikan', (int) $statistik->perbaikan],
+        [
+            'judul' => 'Total Pengajuan Masuk',
+            'nilai' => (int) $statistik->total,
+            'catatan' => 'Tidak termasuk draf User',
+            'jenis' => 'teal',
+            'ikon' => '▤',
+        ],
+        [
+            'judul' => 'Menunggu Verifikasi',
+            'nilai' => (int) $statistik->menunggu,
+            'catatan' => 'Perlu diperiksa Admin',
+            'jenis' => 'blue',
+            'ikon' => '◷',
+        ],
+        [
+            'judul' => 'Terverifikasi',
+            'nilai' => (int) $statistik->terverifikasi,
+            'catatan' => 'Lolos pemeriksaan administrasi',
+            'jenis' => 'green',
+            'ikon' => '✓',
+        ],
+        [
+            'judul' => 'Perlu Perbaikan',
+            'nilai' => (int) $statistik->perbaikan,
+            'catatan' => 'Menunggu perbaikan User',
+            'jenis' => 'amber',
+            'ikon' => '!',
+        ],
     ];
 @endphp
 
@@ -623,16 +665,50 @@
                 </a>
             </section>
         @else
-            <div class="mb-5 grid grid-cols-2 gap-3 lg:grid-cols-4">
+
+            {{-- =====================================
+                 KARTU STATISTIK
+                 Sama dengan Dashboard Seleksi
+               ===================================== --}}
+
+            <section
+                class="bc-stats"
+                aria-label="Statistik pengajuan"
+            >
+
                 @foreach ($statistikKartu as $item)
-                    <div class="vra-card px-5 py-4">
-                        <p class="vra-muted">{{ $item[0] }}</p>
-                        <strong class="mt-2 block text-2xl text-[#103f36]">
-                            {{ $item[1] }}
-                        </strong>
-                    </div>
+
+                    <article class="bc-stat bc-stat--{{ $item['jenis'] }}">
+
+                        <div class="bc-stat-top">
+
+                            <h3 class="bc-stat-label">
+                                {{ $item['judul'] }}
+                            </h3>
+
+                            <span
+                                class="bc-stat-icon"
+                                aria-hidden="true"
+                            >
+                                {{ $item['ikon'] }}
+                            </span>
+
+                        </div>
+
+                        <p class="bc-stat-value">
+                            {{ number_format((int) $item['nilai'], 0, ',', '.') }}
+                        </p>
+
+                        <p class="bc-stat-foot">
+                            {{ $item['catatan'] }}
+                        </p>
+
+                    </article>
+
                 @endforeach
-            </div>
+
+            </section>
+
         @endif
 
         <section class="vra-card">
@@ -665,7 +741,10 @@
                         </option>
 
                         @foreach ($labelStatus as $kode => $label)
-                            <option value="{{ $kode }}" @selected($filter === $kode)>
+                            <option
+                                value="{{ $kode }}"
+                                @selected($filter === $kode)
+                            >
                                 {{ $label }}
                             </option>
                         @endforeach
@@ -696,6 +775,7 @@
                                     <strong class="text-[#123f34]">
                                         {{ $item->nama_lengkap ?: $item->username }}
                                     </strong>
+
                                     <p class="vra-muted">
                                         {{ $item->asal_sekolah ?: '-' }}
                                     </p>
@@ -730,7 +810,10 @@
                             </tr>
                         @empty
                             <tr>
-                                <td class="p-8 text-center text-slate-500" colspan="5">
+                                <td
+                                    class="p-8 text-center text-slate-500"
+                                    colspan="5"
+                                >
                                     Belum ada pengajuan yang sesuai.
                                 </td>
                             </tr>

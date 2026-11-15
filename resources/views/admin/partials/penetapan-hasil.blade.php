@@ -231,8 +231,8 @@
                 <div class="mt-4 flex flex-wrap gap-3">
 
                     <a
-                        href="{{ route('admin.lingkup.index') }}"
-                        class="bc-btn bc-btn--outline"
+                        href="{{ route('admin.hasil.index', ['lingkup' => 'pendaftar']) }}"
+                        class="bc-btn bc-btn--primary font-bold text-white bg-emerald-700 hover:bg-emerald-800"
                     >
                         Ubah ke Lingkup Pendaftar
                     </a>

@@ -393,12 +393,17 @@ class PerhitunganController extends Controller
         );
 
         // Menentukan lingkup aktif.
-        $mode = $request
-            ->session()
-            ->get(
-                'spk_lingkup',
-                LingkupSeleksi::ARTIKEL
-            );
+        if ($request->has('lingkup') && isset(LingkupSeleksi::PILIHAN[$request->query('lingkup')])) {
+            $mode = (string) $request->query('lingkup');
+            $request->session()->put('spk_lingkup', $mode);
+        } else {
+            $mode = $request
+                ->session()
+                ->get(
+                    'spk_lingkup',
+                    LingkupSeleksi::PENDAFTAR
+                );
+        }
 
         // Pastikan pilihan lingkup valid.
         $mode = is_string($mode)

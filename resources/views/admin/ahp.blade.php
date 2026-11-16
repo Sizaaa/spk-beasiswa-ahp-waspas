@@ -1,878 +1,353 @@
-
 @extends('layouts.admin')
 
 @section('title', 'Perhitungan AHP - Beasiswa Cerdas')
 @section('judul-admin', 'Perhitungan AHP')
-@section('deskripsi-admin', 'Bobot artikel dan pengujian matriks perbandingan berpasangan.')
+@section('deskripsi-admin', 'Pembobotan kriteria dan pengujian konsistensi matriks perbandingan berpasangan.')
 
 @section('admin-content')
 
 @php
     $kodeKriteria = array_keys($kriteria);
+    $namaKriteria = array_column(array_values($kriteria), 'nama');
+    $modeSimulasiAktif = $bobotAktif['mode'] === 'simulasi';
 
-    $namaKriteria = array_column(
-        array_values($kriteria),
-        'nama'
-    );
-
-    $modeSimulasiAktif =
-        $bobotAktif['mode'] === 'simulasi';
-@endphp
-
-<main class="bc-admin-main space-y-6">
-
-    <!-- PESAN BERHASIL -->
-    @if (session('sukses'))
-
-        <div
-            class="rounded-xl border border-emerald-200
-                   bg-emerald-50 p-4
-                   text-sm text-emerald-800"
-            role="status"
-        >
-            {{ session('sukses') }}
-        </div>
-
-    @endif
-
-    <!-- PESAN ERROR -->
-    @if ($errors->any())
-
-        <div
-            class="rounded-xl border border-red-200
-                   bg-red-50 p-4 text-sm text-red-800"
-            role="alert"
-        >
-
-            <p class="font-bold">
-                Periksa masukan berikut:
-            </p>
-
-            <ul class="mt-2 list-inside
-                       list-disc space-y-1">
-
-                @foreach ($errors->all() as $error)
-                    <li>{{ $error }}</li>
-                @endforeach
-
-            </ul>
-
-        </div>
-
-    @endif
-
-    <!-- =====================================
-         1. BOBOT ARTIKEL
-    ===================================== -->
-
-    <section class="bc-panel">
-
-        <div class="bc-panel-header">
-
-            <div>
-
-                <h2 class="bc-panel-title">
-                    1. Bobot yang Tercantum
-                    pada Artikel
-                </h2>
-
-                <p class="bc-panel-desc">
-
-                    Acuan penelitian:
-                    Penentuan Bobot Kriteria
-                    dengan AHP, halaman 13.
-
-                </p>
-
-            </div>
-
-            <span
-                class="bc-status
-                       {{ $modeSimulasiAktif
-                          ? 'bc-status--perlu_perbaikan'
-                          : 'bc-status--terverifikasi' }}"
-            >
-
-                {{ $modeSimulasiAktif
-                    ? 'Mode simulasi aktif'
-                    : 'Mode artikel aktif' }}
-
-            </span>
-
-        </div>
-
-        <div class="bc-panel-body">
-
-            <!-- BOBOT ARTIKEL -->
-            <div class="grid grid-cols-2
-                        gap-3 sm:grid-cols-5">
-
-                @foreach ($kodeKriteria as $i => $kode)
-
-                    <div class="bc-mini-stat">
-
-                        <p class="bc-mini-stat-label">
-
-                            {{ $kode }}
-
-                            · {{ $namaKriteria[$i] }}
-
-                        </p>
-
-                        <p class="bc-mini-stat-value">
-
-                            {{ number_format(
-                                \App\Services\SpkCalculator::BOBOT_REFERENSI[$i],
-                                3,
-                                ',',
-                                '.'
-                            ) }}
-
-                        </p>
-
-                    </div>
-
-                @endforeach
-
-            </div>
-
-            <!-- CR ARTIKEL -->
-            <div class="bc-notice mt-5">
-
-                <strong>
-                    Perbedaan yang penting:
-                </strong>
-
-                Artikel menyebutkan Nilai Konsistensi (CR) = 0,045.
-
-                Angka tersebut adalah
-                <strong>
-                    CR yang dilaporkan
-                    penulis artikel
-                </strong>,
-
-                bukan hasil yang dihitung
-                ulang di halaman ini.
-
-                Matriks perbandingan berpasangan
-                asli tidak ditampilkan dalam PDF,
-                sehingga nilai konsistensi artikel (CR) belum dapat
-                direproduksi secara independen.
-
-            </div>
-
-            <div class="mt-5 flex flex-wrap
-                        items-center gap-3">
-
-                <!-- PILIH BOBOT ARTIKEL -->
-                {{-- BC-AHP-STATUS-MODE-V2 --}}
-
-@php
-    // Ambil status bobot yang benar-benar
-    // sedang digunakan oleh halaman AHP.
-
-    $bcModeBobot = $modeAktif
-        ?? ($informasi['mode'] ?? ($bobotAktif['mode'] ?? null));
-
-    // Mendukung versi controller yang lebih lama.
+    $bcModeBobot = $modeAktif ?? ($informasi['mode'] ?? ($bobotAktif['mode'] ?? null));
     if (!in_array($bcModeBobot, ['artikel', 'simulasi'], true)) {
-        $bcModeBobot = is_array($bobotAktif['ahp'] ?? null)
-            ? 'simulasi'
-            : 'artikel';
+        $bcModeBobot = is_array($bobotAktif['ahp'] ?? null) ? 'simulasi' : 'artikel';
     }
 @endphp
 
-@if ($bcModeBobot === 'artikel')
+<main class="bc-admin-main space-y-7">
 
-    <div
-        role="status"
-        style="
-            display: flex;
-            flex-wrap: wrap;
-            align-items: center;
-            justify-content: space-between;
-            gap: 16px;
-            padding: 17px 19px;
-            background: #f0faf5;
-            border: 1px solid #b9ddcd;
-            border-radius: 13px;
-            margin-top: 15px;
-        "
-    >
+    <!-- ALERT SUKSES / ERROR -->
+    @if (session('sukses'))
+        <div class="flex items-center gap-3 rounded-2xl border border-emerald-200 bg-emerald-50/80 p-4.5 text-xs font-semibold text-emerald-900 shadow-xs" role="status">
+            <span class="flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-emerald-200/80 text-emerald-900 font-bold">✓</span>
+            <div class="flex-1">{{ session('sukses') }}</div>
+        </div>
+    @endif
 
-        <div style="flex: 1 1 300px; min-width: 0;">
-
-            <strong
-                style="
-                    display: block;
-                    font-size: 14px;
-                    font-weight: 800;
-                    color: #0c4b3a;
-                "
-            >
-                Bobot Referensi Artikel Sedang Digunakan
-            </strong>
-
-            <p
-                style="
-                    margin: 6px 0 0;
-                    font-size: 13px;
-                    line-height: 1.7;
-                    color: #4e7063;
-                "
-            >
-                Bobot C1–C5 dari artikel sudah digunakan
-                pada perhitungan WASPAS, hasil seleksi,
-                dan laporan. Tidak perlu diaktifkan ulang.
+    @if ($errors->any())
+        <div class="rounded-2xl border border-red-200 bg-red-50/80 p-5 text-xs text-red-900 shadow-xs" role="alert">
+            <p class="font-bold flex items-center gap-2 text-sm text-red-950">
+                <span>⚠️</span>
+                <span>Terjadi kesalahan pada data masukan:</span>
             </p>
-
+            <ul class="mt-2 list-inside list-disc space-y-1 font-medium pl-1">
+                @foreach ($errors->all() as $error)
+                    <li>{{ $error }}</li>
+                @endforeach
+            </ul>
         </div>
+    @endif
 
-        <a
-            href="{{ route('admin.waspas.index') }}"
-            class="bc-btn bc-btn--outline"
-        >
-            Lihat Perhitungan WASPAS
-        </a>
-
-    </div>
-
-@else
-
-    <div
-        role="status"
-        style="
-            padding: 16px 19px;
-            background: #f5f9fb;
-            border: 1px solid #dce7ec;
-            border-radius: 13px;
-            margin-top: 15px;
-            margin-bottom: 12px;
-        "
-    >
-
-        <strong
-            style="
-                display: block;
-                font-size: 14px;
-                font-weight: 800;
-                color: #143f38;
-            "
-        >
-            Bobot Hasil AHP Baru Sedang Digunakan
-        </strong>
-
-        <p
-            style="
-                margin: 6px 0 0;
-                font-size: 13px;
-                line-height: 1.7;
-                color: #58707b;
-            "
-        >
-            Sistem menggunakan bobot hasil
-            perbandingan kriteria yang dihitung Admin.
-            Untuk kembali menggunakan bobot penelitian,
-            pilih tombol di bawah.
-        </p>
-
-    </div>
-
-<form
-                    method="POST"
-                    action="{{ route('admin.ahp.pilih') }}"
-                >
-
-                    @csrf
-
-                    <input
-                        type="hidden"
-                        name="mode"
-                        value="artikel"
-                    >
-
-                    <button
-                        type="submit"
-                        class="bc-btn bc-btn--primary"
-                        @disabled(!$modeSimulasiAktif)
-                    >
-                        Gunakan Bobot Referensi Artikel
-                    </button>
-
-                </form>
-
-@endif
-
-                <!-- VALIDASI ARTIKEL -->
-                @if (
-                    \Illuminate\Support\Facades\Route::has(
-                        'admin.validasi-penelitian.index'
-                    )
-                )
-
-                    <a
-                        href="{{ route(
-                            'admin.validasi-penelitian.index'
-                        ) }}"
-                        class="bc-btn bc-btn--outline"
-                    >
-
-                        Validasi A1–A5 dengan Artikel
-
-                    </a>
-
-                @endif
-
-            </div>
-
-        </div>
-
-    </section>
-
-    <!-- =====================================
-         2. BOBOT AKTIF
-    ===================================== -->
-
-    <section class="bc-panel">
-
-        <div class="bc-panel-header">
-
+    <!-- ==================================================
+         1. BOBOT YANG TERCANTUM PADA ARTIKEL
+    ================================================== -->
+    <section class="rounded-2xl border border-[#E3EBE6] bg-white shadow-sm overflow-hidden">
+        <div class="flex flex-wrap items-center justify-between gap-4 border-b border-[#EEF3F0] px-6 py-4.5 bg-[#FAFCFB]">
             <div>
-
-                <h2 class="bc-panel-title">
-
-                    2. Bobot Aktif untuk WASPAS,
-                    Hasil Seleksi, dan Laporan
-
+                <h2 class="text-base font-bold text-[#103F36] flex items-center gap-2">
+                    <span class="flex h-6 w-6 items-center justify-center rounded-lg bg-emerald-100 text-xs font-extrabold text-[#103F36]">1</span>
+                    <span>Bobot Acuan Artikel Penelitian (Jurnal AHP)</span>
                 </h2>
-
-                <p class="bc-panel-desc">
-
-                    {{ $bobotAktif['sumber'] }}
-
+                <p class="text-xs text-[#64746D] mt-0.5">
+                    Data rujukan primer: Penentuan Bobot Kriteria dengan AHP, hal. 13 (CR = 0,045).
                 </p>
-
             </div>
 
+            <span class="rounded-full px-3 py-1 text-xs font-extrabold {{ $modeSimulasiAktif ? 'bg-amber-100 text-amber-900' : 'bg-emerald-100 text-emerald-900' }}">
+                {{ $modeSimulasiAktif ? 'Mode Simulasi Aktif' : '✓ Mode Artikel Sedang Digunakan' }}
+            </span>
         </div>
 
-        <div class="bc-panel-body">
-
-            <div class="grid grid-cols-2
-                        gap-3 sm:grid-cols-5">
-
+        <div class="p-6 space-y-6">
+            <!-- 5 Kriteria Mini Stat Cards -->
+            <div class="grid grid-cols-2 sm:grid-cols-5 gap-3.5">
                 @foreach ($kodeKriteria as $i => $kode)
-
-                    <div class="bc-mini-stat">
-
-                        <p class="bc-mini-stat-label">
+                    <div class="rounded-xl border border-[#E3EBE6] bg-[#F7FAF8] p-4 text-center hover:border-emerald-300 transition">
+                        <span class="text-[10px] font-extrabold uppercase tracking-wider text-[#116759] block">
                             {{ $kode }}
+                        </span>
+                        <span class="text-xl font-extrabold text-[#103F36] mt-1 block tabular-nums">
+                            {{ number_format(\App\Services\SpkCalculator::BOBOT_REFERENSI[$i], 3, ',', '.') }}
+                        </span>
+                        <span class="text-[10px] text-[#64746D] truncate block mt-1" title="{{ $namaKriteria[$i] }}">
+                            {{ $namaKriteria[$i] }}
+                        </span>
+                    </div>
+                @endforeach
+            </div>
+
+            <!-- Catatan Metodologi -->
+            <div class="rounded-xl border border-emerald-100 bg-emerald-50/60 p-4 text-xs text-emerald-950 space-y-1 leading-relaxed">
+                <p class="font-bold flex items-center gap-1.5">
+                    <span>💡</span>
+                    <span>Informasi Verifikasi Rujukan:</span>
+                </p>
+                <p class="text-emerald-900/80">
+                    Nilai CR = 0,045 adalah hasil yang dilaporkan dalam jurnal publikasi rujukan. Matriks perbandingan mentah tidak dicantumkan lengkap dalam artikel asli sehingga bobot di atas dijadikan standar acuan baku penelitian.
+                </p>
+            </div>
+
+            <!-- Status Banner & Switcher -->
+            @if ($bcModeBobot === 'artikel')
+                <div class="flex flex-wrap items-center justify-between gap-4 rounded-xl border border-emerald-200 bg-[#F0FAF5] p-4.5">
+                    <div class="space-y-1">
+                        <h4 class="text-xs font-extrabold text-[#0C4B3A]">
+                            ✓ Bobot Referensi Artikel Sedang Digunakan di Sistem
+                        </h4>
+                        <p class="text-xs text-[#4E7063]">
+                            Bobot C1–C5 dari artikel saat ini menjadi pengali pada normalisasi WASPAS, perankingan, dan cetak laporan.
                         </p>
-
-                        <p class="bc-mini-stat-value">
-
-                            {{ number_format(
-                                (float) $bobotAktif['bobot'][$i],
-                                5,
-                                ',',
-                                '.'
-                            ) }}
-
-                        </p>
-
                     </div>
 
-                @endforeach
+                    <a href="{{ route('admin.waspas.index') }}"
+                       class="inline-flex items-center gap-1.5 rounded-xl border border-[#116759] bg-white px-4 py-2 text-xs font-bold text-[#116759] hover:bg-[#116759] hover:text-white transition">
+                        <span>Lihat Perhitungan WASPAS</span>
+                        <span>→</span>
+                    </a>
+                </div>
+            @else
+                <div class="flex flex-wrap items-center justify-between gap-4 rounded-xl border border-amber-200 bg-[#FFFDF5] p-4.5">
+                    <div class="space-y-1">
+                        <h4 class="text-xs font-extrabold text-amber-950">
+                            ⚙ Mode Simulasi Baru Sedang Aktif
+                        </h4>
+                        <p class="text-xs text-amber-900/80">
+                            Sistem sedang menggunakan bobot yang dihasilkan dari form simulasi perbandingan di bawah.
+                        </p>
+                    </div>
 
-            </div>
-
-            <p class="bc-muted-note mt-4">
-
-                Mode artikel aktif secara default.
-
-                Menghitung matriks simulasi
-                tidak mengubah perhitungan WASPAS
-                sebelum Admin memilih
-                untuk menggunakannya.
-
-                Mode simulasi hanya berlaku
-                pada sesi login saat ini.
-
-            </p>
-
+                    <form method="POST" action="{{ route('admin.ahp.pilih') }}">
+                        @csrf
+                        <input type="hidden" name="mode" value="artikel">
+                        <button type="submit"
+                                class="inline-flex items-center gap-1.5 rounded-xl bg-[#103F36] px-4 py-2 text-xs font-bold text-white hover:bg-[#116759] transition shadow-xs">
+                            <span>Kembali ke Bobot Artikel</span>
+                            <span>↺</span>
+                        </button>
+                    </form>
+                </div>
+            @endif
         </div>
-
     </section>
 
-    <!-- =====================================
-         3. FORM SIMULASI AHP
-    ===================================== -->
-
-    <section class="bc-panel">
-
-        <div class="bc-panel-header">
-
+    <!-- ==================================================
+         2. BOBOT AKTIF UNTUK KOMPUTASI
+    ================================================== -->
+    <section class="rounded-2xl border border-[#E3EBE6] bg-white shadow-sm overflow-hidden">
+        <div class="border-b border-[#EEF3F0] px-6 py-4.5 bg-[#FAFCFB] flex items-center justify-between">
             <div>
-
-                <h2 class="bc-panel-title">
-
-                    3. Simulasi Matriks
-                    Perbandingan AHP
-
+                <h2 class="text-base font-bold text-[#103F36] flex items-center gap-2">
+                    <span class="flex h-6 w-6 items-center justify-center rounded-lg bg-teal-100 text-xs font-extrabold text-[#116759]">2</span>
+                    <span>Bobot Aktif Komputasi WASPAS & Seleksi</span>
                 </h2>
-
-                <p class="bc-panel-desc">
-
-                    Bandingkan tingkat kepentingan
-                    lima kriteria.
-
-                    Nilai kebalikan matriks
-                    dihitung otomatis oleh sistem.
-
+                <p class="text-xs text-[#64746D] mt-0.5">
+                    Sumber data aktif: <strong>{{ $bobotAktif['sumber'] }}</strong>
                 </p>
-
             </div>
-
         </div>
 
-        <div class="bc-panel-body">
-
-            <div class="bc-notice mb-5">
-
-                Nilai awal merupakan
-
-                <strong>
-                    rekonstruksi matematis
-                    dari bobot artikel
-                </strong>
-
-                untuk tujuan latihan.
-
-                Ini bukan matriks asli yang
-                menghasilkan CR 0,045
-                pada artikel.
-
-                Nilai 1 berarti sama penting.
-
-                Nilai 3 berarti kriteria
-                di kiri tiga kali lebih penting.
-
-                Untuk keadaan sebaliknya,
-                gunakan angka seperti 0,333333
-                (sekitar 1/3).
-
+        <div class="p-6">
+            <div class="grid grid-cols-2 sm:grid-cols-5 gap-3.5">
+                @foreach ($kodeKriteria as $i => $kode)
+                    <div class="rounded-xl border border-emerald-100 bg-[#F4F9F7] p-4 text-center">
+                        <span class="text-[10px] font-extrabold text-[#116759] uppercase block">{{ $kode }}</span>
+                        <span class="text-xl font-extrabold text-[#103F36] mt-1 block tabular-nums">
+                            {{ number_format((float) $bobotAktif['bobot'][$i], 5, ',', '.') }}
+                        </span>
+                        <span class="text-[10px] text-[#64746D] truncate block mt-0.5">
+                            {{ round(((float)$bobotAktif['bobot'][$i]) * 100, 1) }}% kontribusi
+                        </span>
+                    </div>
+                @endforeach
             </div>
 
-            <!-- FORM PERBANDINGAN -->
-            <form
-                method="POST"
-                action="{{ route('admin.ahp.hitung') }}"
-            >
+            <p class="text-[11px] text-[#84968F] mt-4 leading-relaxed">
+                * Pengaturan bobot ini disimpan pada session dan memengaruhi modul WASPAS, Hasil Seleksi, Analisis Sensitivitas, dan Laporan.
+            </p>
+        </div>
+    </section>
 
+    <!-- ==================================================
+         3. FORM SIMULASI MATRIKS PERBANDINGAN BERPASANGAN
+    ================================================== -->
+    <section class="rounded-2xl border border-[#E3EBE6] bg-white shadow-sm overflow-hidden">
+        <div class="border-b border-[#EEF3F0] px-6 py-4.5 bg-[#FAFCFB]">
+            <h2 class="text-base font-bold text-[#103F36] flex items-center gap-2">
+                <span class="flex h-6 w-6 items-center justify-center rounded-lg bg-blue-100 text-xs font-extrabold text-blue-900">3</span>
+                <span>Simulasi Matriks Perbandingan Berpasangan (Pairwise Comparison)</span>
+            </h2>
+            <p class="text-xs text-[#64746D] mt-0.5">
+                Masukkan nilai skala Saaty (1–9 atau pecahan seperti 0.333) untuk menguji konsistensi matriks perbandingan kriteria baru.
+            </p>
+        </div>
+
+        <div class="p-6 space-y-6">
+            <div class="rounded-xl border border-slate-200 bg-[#F8FAFC] p-4 text-xs text-slate-700 leading-relaxed">
+                <strong>Pedoman Skala Saaty:</strong> 1 = Sama penting, 3 = Sedikit lebih penting, 5 = Lebih penting, 7 = Sangat lebih penting, 9 = Mutlak lebih penting. Nilai kebalikan (1/x) dihitung otomatis oleh sistem.
+            </div>
+
+            <form method="POST" action="{{ route('admin.ahp.hitung') }}" class="space-y-6">
                 @csrf
 
-                <div class="grid gap-3 md:grid-cols-2">
-
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                     @for ($i = 0; $i < 5; $i++)
-
                         @for ($j = $i + 1; $j < 5; $j++)
-
-                            @php
-                                $kunci = $i . '_' . $j;
-                            @endphp
-
-                            <label
-                                class="block rounded-xl
-                                       border border-slate-200
-                                       p-4 text-sm"
-                            >
-
-                                <span
-                                    class="mb-1 block font-bold
-                                           text-[#103F36]"
-                                >
-
-                                    {{ $kodeKriteria[$i] }}
-
-                                    dibanding
-
-                                    {{ $kodeKriteria[$j] }}
-
-                                </span>
-
-                                <span
-                                    class="mb-2 block text-xs
-                                           text-slate-500"
-                                >
-
-                                    {{ $namaKriteria[$i] }}
-
-                                    /
-
-                                    {{ $namaKriteria[$j] }}
-
-                                </span>
+                            @php $kunci = $i . '_' . $j; @endphp
+                            <div class="rounded-xl border border-[#E3EBE6] bg-[#FAFCFB] p-4 hover:border-emerald-300 transition space-y-2">
+                                <div class="flex items-center justify-between text-xs">
+                                    <span class="font-bold text-[#103F36]">
+                                        {{ $kodeKriteria[$i] }} vs {{ $kodeKriteria[$j] }}
+                                    </span>
+                                    <span class="text-[11px] text-[#64746D]">
+                                        {{ $namaKriteria[$i] }} / {{ $namaKriteria[$j] }}
+                                    </span>
+                                </div>
 
                                 <input
                                     type="number"
-
                                     name="pasangan[{{ $kunci }}]"
-
-                                    value="{{ old(
-                                        'pasangan.' . $kunci,
-                                        $pasangan[$kunci] ?? ''
-                                    ) }}"
-
+                                    value="{{ old('pasangan.' . $kunci, $pasangan[$kunci] ?? '') }}"
                                     min="0.111111111111"
-
                                     max="9"
-
                                     step="any"
-
                                     inputmode="decimal"
-
                                     required
-
-                                    class="bc-form-control w-full"
+                                    class="w-full rounded-xl border border-[#CFDED8] bg-white px-3.5 py-2.5 text-xs font-semibold text-[#172B25] focus:border-[#20A67A] focus:outline-none focus:ring-2 focus:ring-[#20A67A]/20 transition"
                                 >
-
-                            </label>
-
+                            </div>
                         @endfor
-
                     @endfor
-
                 </div>
 
-                <p class="bc-muted-note mt-4">
-
-                    Gunakan titik sebagai
-                    pemisah desimal.
-
-                    Batas perbandingan AHP
-                    adalah 1/9 hingga 9.
-
-                    Hasil dianggap konsisten
-                    apabila CR ≤ 0,10.
-
-                </p>
-
-                <div class="mt-5 flex flex-wrap gap-3">
-
-                    <button
-                        type="submit"
-                        class="bc-btn bc-btn--primary"
-                    >
-
-                        Hitung Bobot AHP Baru
-
+                <div class="flex flex-wrap items-center gap-3 pt-2">
+                    <button type="submit"
+                            class="inline-flex items-center gap-2 rounded-xl bg-[#103F36] px-5 py-2.5 text-xs font-extrabold text-white shadow-md shadow-[#103F36]/20 hover:bg-[#116759] transition">
+                        <span>Hitung Bobot AHP Baru</span>
+                        <span>⚡</span>
                     </button>
 
-                    <a
-                        href="{{ route('admin.waspas.index') }}"
-                        class="bc-btn bc-btn--outline"
-                    >
-
-                        Buka WASPAS →
-
+                    <a href="{{ route('admin.waspas.index') }}"
+                       class="inline-flex items-center gap-1.5 rounded-xl border border-[#CFDED8] bg-white px-4 py-2.5 text-xs font-bold text-[#103F36] hover:bg-[#F5F8F6] transition">
+                        <span>Buka Modul WASPAS</span>
+                        <span>→</span>
                     </a>
-
                 </div>
-
             </form>
-
         </div>
-
     </section>
 
-    <!-- =====================================
-         4. HASIL SIMULASI
-    ===================================== -->
-
-    @if (
-        $hasil &&
-        isset(
-            $hasil['matriks'],
-            $hasil['bobot'],
-            $hasil['cr']
-        )
-    )
-
-        <section class="bc-panel">
-
-            <div class="bc-panel-header">
-
+    <!-- ==================================================
+         4. HASIL SIMULASI & UJI KONSISTENSI
+    ================================================== -->
+    @if ($hasil && isset($hasil['matriks'], $hasil['bobot'], $hasil['cr']))
+        <section class="rounded-2xl border border-[#E3EBE6] bg-white shadow-sm overflow-hidden">
+            <div class="flex flex-wrap items-center justify-between gap-4 border-b border-[#EEF3F0] px-6 py-4.5 bg-[#FAFCFB]">
                 <div>
-
-                    <h2 class="bc-panel-title">
-
-                        4. Hasil Simulasi
-                        AHP Terakhir
-
+                    <h2 class="text-base font-bold text-[#103F36] flex items-center gap-2">
+                        <span class="flex h-6 w-6 items-center justify-center rounded-lg bg-emerald-100 text-xs font-extrabold text-[#103F36]">4</span>
+                        <span>Hasil Perhitungan Matriks & Uji Konsistensi</span>
                     </h2>
-
-                    <p class="bc-panel-desc">
-
-                        Eigenvektor, λ maks,
-                        Consistency Index (CI),
-                        dan Consistency Ratio (CR).
-
+                    <p class="text-xs text-[#64746D] mt-0.5">
+                        Nilai Eigenvektor, Nilai Maksimum (λmax), Consistency Index (CI), dan Consistency Ratio (CR).
                     </p>
-
                 </div>
 
-                <span
-                    class="bc-status
-                           {{ $simulasiLayak
-                              ? 'bc-status--terverifikasi'
-                              : 'bc-status--ditolak' }}"
-                >
-
-                    {{ $simulasiLayak
-                        ? 'Konsisten'
-                        : 'Belum konsisten' }}
-
+                <span class="rounded-full px-3 py-1 text-xs font-extrabold {{ $simulasiLayak ? 'bg-emerald-100 text-emerald-900 border border-emerald-200' : 'bg-rose-100 text-rose-900 border border-rose-200' }}">
+                    {{ $simulasiLayak ? '✓ Matriks Konsisten (CR ≤ 0.10)' : '✕ Tidak Konsisten (CR > 0.10)' }}
                 </span>
-
             </div>
 
-            <div class="bc-panel-body">
-
-                <!-- MATRIKS -->
-                <div class="bc-table-scroll">
-
-                    <table
-                        class="bc-table"
-                        style="min-width:690px"
-                    >
-
+            <div class="p-6 space-y-6">
+                <!-- Matriks Table -->
+                <div class="overflow-x-auto rounded-xl border border-[#E3EBE6]">
+                    <table class="w-full text-left text-xs">
                         <thead>
-
-                            <tr>
-
-                                <th>Kriteria</th>
-
+                            <tr class="bg-[#F7FAF8] border-b border-[#E3EBE6] text-[11px] font-bold uppercase tracking-wider text-[#64746D]">
+                                <th class="px-4 py-3">Kriteria</th>
                                 @foreach ($kodeKriteria as $kode)
-
-                                    <th>{{ $kode }}</th>
-
+                                    <th class="px-4 py-3">{{ $kode }}</th>
                                 @endforeach
-
-                                <th>Bobot Simulasi</th>
-
+                                <th class="px-4 py-3 text-right bg-emerald-50/60 text-[#103F36]">Bobot Simulasi</th>
                             </tr>
-
                         </thead>
-
-                        <tbody>
-
-                            @foreach (
-                                $kodeKriteria as $i => $kode
-                            )
-
-                                <tr>
-
-                                    <td class="font-bold">
-
-                                        {{ $kode }}
-
+                        <tbody class="divide-y divide-[#EEF3F0]">
+                            @foreach ($kodeKriteria as $i => $kode)
+                                <tr class="hover:bg-[#F9FCFA]">
+                                    <td class="px-4 py-3 font-bold text-[#103F36] bg-[#FAFCFB]">
+                                        {{ $kode }} - {{ $namaKriteria[$i] }}
                                     </td>
-
-                                    @foreach (
-                                        $kodeKriteria
-                                        as $j => $kodeKolom
-                                    )
-
-                                        <td>
-
-                                            {{ number_format(
-                                                (float) $hasil['matriks'][$i][$j],
-                                                5,
-                                                ',',
-                                                '.'
-                                            ) }}
-
+                                    @foreach ($kodeKriteria as $j => $kodeKolom)
+                                        <td class="px-4 py-3 text-[#64746D] tabular-nums">
+                                            {{ number_format((float) $hasil['matriks'][$i][$j], 4, ',', '.') }}
                                         </td>
-
                                     @endforeach
-
-                                    <td class="font-bold">
-
-                                        {{ number_format(
-                                            (float) $hasil['bobot'][$i],
-                                            6,
-                                            ',',
-                                            '.'
-                                        ) }}
-
+                                    <td class="px-4 py-3 text-right font-extrabold text-[#103F36] bg-emerald-50/40 tabular-nums">
+                                        {{ number_format((float) $hasil['bobot'][$i], 6, ',', '.') }}
                                     </td>
-
                                 </tr>
-
                             @endforeach
-
                         </tbody>
-
                     </table>
-
                 </div>
 
-                <!-- METRIK KONSISTENSI -->
-                <div class="mt-5 grid gap-3 sm:grid-cols-3">
-
-                    <div class="bc-mini-stat">
-
-                        <p class="bc-mini-stat-label">
-                            λ maks
-                        </p>
-
-                        <p class="bc-mini-stat-value">
-
-                            {{ number_format(
-                                (float) $hasil['lambda_max'],
-                                5,
-                                ',',
-                                '.'
-                            ) }}
-
-                        </p>
-
+                <!-- 3 Consistency Metric Cards -->
+                <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
+                    <div class="rounded-xl border border-[#E3EBE6] bg-[#F7FAF8] p-4 text-center">
+                        <span class="text-[10px] font-bold text-[#64746D] uppercase">λ maks (Eigenvalue)</span>
+                        <span class="text-2xl font-extrabold text-[#103F36] mt-1 block tabular-nums">
+                            {{ number_format((float) $hasil['lambda_max'], 5, ',', '.') }}
+                        </span>
+                        <span class="text-[10px] text-slate-400 mt-1 block">Ideal mendekati 5.000</span>
                     </div>
 
-                    <div class="bc-mini-stat">
-
-                        <p class="bc-mini-stat-label">
-                            CI Simulasi
-                        </p>
-
-                        <p class="bc-mini-stat-value">
-
-                            {{ number_format(
-                                (float) $hasil['ci'],
-                                5,
-                                ',',
-                                '.'
-                            ) }}
-
-                        </p>
-
+                    <div class="rounded-xl border border-[#E3EBE6] bg-[#F7FAF8] p-4 text-center">
+                        <span class="text-[10px] font-bold text-[#64746D] uppercase">CI (Consistency Index)</span>
+                        <span class="text-2xl font-extrabold text-[#103F36] mt-1 block tabular-nums">
+                            {{ number_format((float) $hasil['ci'], 5, ',', '.') }}
+                        </span>
+                        <span class="text-[10px] text-slate-400 mt-1 block">(λmax - n) / (n - 1)</span>
                     </div>
 
-                    <div class="bc-mini-stat">
-
-                        <p class="bc-mini-stat-label">
-                            CR Simulasi
-                        </p>
-
-                        <p class="bc-mini-stat-value">
-
-                            {{ number_format(
-                                (float) $hasil['cr'],
-                                5,
-                                ',',
-                                '.'
-                            ) }}
-
-                        </p>
-
+                    <div class="rounded-xl border {{ $simulasiLayak ? 'border-emerald-200 bg-emerald-50/60' : 'border-rose-200 bg-rose-50/60' }} p-4 text-center">
+                        <span class="text-[10px] font-bold {{ $simulasiLayak ? 'text-emerald-800' : 'text-rose-800' }} uppercase">CR (Consistency Ratio)</span>
+                        <span class="text-2xl font-extrabold {{ $simulasiLayak ? 'text-emerald-900' : 'text-rose-900' }} mt-1 block tabular-nums">
+                            {{ number_format((float) $hasil['cr'], 5, ',', '.') }}
+                        </span>
+                        <span class="text-[10px] font-semibold {{ $simulasiLayak ? 'text-emerald-700' : 'text-rose-700' }} mt-1 block">
+                            {{ $simulasiLayak ? 'CR ≤ 0.10 (Konsisten)' : 'CR > 0.10 (Inkonsisten)' }}
+                        </span>
                     </div>
-
                 </div>
 
-                <!-- KETERANGAN -->
-                <div class="bc-notice mt-4">
-
+                <!-- Action Button for Applying Weights -->
+                <div class="flex flex-wrap items-center gap-3 pt-2">
                     @if ($simulasiLayak)
-
-                        Matriks simulasi konsisten.
-
-                        Bobot simulasi dapat digunakan
-                        untuk WASPAS, tetapi
-
-                        <strong>
-                            tidak otomatis aktif.
-                        </strong>
-
-                    @else
-
-                        Matriks simulasi belum
-                        memenuhi syarat konsistensi.
-
-                        Perbaiki perbandingan sebelum
-                        digunakan untuk WASPAS.
-
-                    @endif
-
-                    CR di sini adalah hasil
-                    perhitungan matriks simulasi,
-
-                    <strong>
-                        bukan Nilai Konsistensi (CR) = 0,045
-                        dari artikel.
-                    </strong>
-
-                </div>
-
-                <!-- TOMBOL PENERAPAN -->
-                <div class="mt-5 flex flex-wrap gap-3">
-
-                    @if ($simulasiLayak)
-
-                        <form
-                            method="POST"
-                            action="{{ route('admin.ahp.pilih') }}"
-                        >
-
+                        <form method="POST" action="{{ route('admin.ahp.pilih') }}">
                             @csrf
-
-                            <input
-                                type="hidden"
-                                name="mode"
-                                value="simulasi"
-                            >
-
-                            <button
-                                type="submit"
-                                class="bc-btn bc-btn--primary"
-                                @disabled($modeSimulasiAktif)
-                            >
-
-                                Gunakan Bobot Simulasi
-                                untuk WASPAS
-
+                            <input type="hidden" name="mode" value="simulasi">
+                            <button type="submit"
+                                    class="inline-flex items-center gap-2 rounded-xl bg-[#20A67A] px-5 py-2.5 text-xs font-bold text-white shadow-md shadow-[#20A67A]/25 hover:bg-[#1B8E68] transition"
+                                    @disabled($modeSimulasiAktif)>
+                                <span>Gunakan Bobot Simulasi Ini untuk WASPAS</span>
+                                <span>✓</span>
                             </button>
-
                         </form>
-
                     @endif
 
-                    <!-- RESET SIMULASI -->
-                    <form
-                        method="POST"
-                        action="{{ route('admin.ahp.reset') }}"
-                    >
-
+                    <form method="POST" action="{{ route('admin.ahp.reset') }}">
                         @csrf
-
-                        <button
-                            type="submit"
-                            class="bc-btn bc-btn--outline"
-
-                            onclick="return confirm('Hapus hasil simulasi dan kembali ke bobot artikel?')"
-                        >
-
+                        <button type="submit"
+                                class="rounded-xl border border-red-200 bg-red-50/60 px-4 py-2.5 text-xs font-bold text-red-700 hover:bg-red-100 transition"
+                                onclick="return confirm('Hapus hasil simulasi dan kembali ke bobot acuan artikel?')">
                             Reset Simulasi
-
                         </button>
-
                     </form>
-
                 </div>
-
             </div>
-
         </section>
-
     @endif
 
 </main>

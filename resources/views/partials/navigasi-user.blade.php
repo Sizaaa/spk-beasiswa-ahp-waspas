@@ -40,7 +40,10 @@
                 items-center justify-between
                 gap-4 px-5 py-4">
 
-        <!-- LOGO -->
+        <!-- =====================================
+             LOGO WEBSITE
+        ===================================== -->
+
         <a
             href="{{ route('user.dashboard') }}"
             class="flex shrink-0 items-center gap-3
@@ -51,40 +54,40 @@
                 xmlns="http://www.w3.org/2000/svg"
                 viewBox="0 0 24 24"
                 fill="none"
-                class="h-8 w-8 shrink-0 text-[#264f73]"
+                class="h-8 w-8 shrink-0"
                 aria-hidden="true"
             >
                 <path
                     d="M4.5 5.5H6c2.33 0 4.17.47 6 1.9c1.83-1.43 3.67-1.9 6-1.9h1.5v11.2H18c-2.2 0-4 .35-6 1.8c-2-1.45-3.8-1.8-6-1.8H4.5V5.5Z"
-                    stroke="currentColor"
+                    stroke="#264F73"
                     stroke-width="1.8"
                     stroke-linecap="round"
                     stroke-linejoin="round"
                 />
                 <path
                     d="M12 7.4V18.5"
-                    stroke="currentColor"
+                    stroke="#264F73"
                     stroke-width="1.8"
                     stroke-linecap="round"
                     stroke-linejoin="round"
                 />
                 <path
                     d="M9.1 11.3l2.1 2.1l4-4.4"
-                    stroke="currentColor"
+                    stroke="#264F73"
                     stroke-width="1.8"
                     stroke-linecap="round"
                     stroke-linejoin="round"
                 />
                 <path
                     d="M3.7 7.2H4.5V17.7H6"
-                    stroke="currentColor"
+                    stroke="#264F73"
                     stroke-width="1.8"
                     stroke-linecap="round"
                     stroke-linejoin="round"
                 />
                 <path
                     d="M20.3 7.2H19.5V17.7H18"
-                    stroke="currentColor"
+                    stroke="#264F73"
                     stroke-width="1.8"
                     stroke-linecap="round"
                     stroke-linejoin="round"
@@ -99,9 +102,13 @@
                     Layanan Beasiswa
                 </span>
             </span>
+
         </a>
 
-        <!-- MENU DESKTOP -->
+        <!-- =====================================
+             MENU DESKTOP
+        ===================================== -->
+
         <nav
             aria-label="Navigasi User"
             class="hidden items-center gap-1 xl:flex"
@@ -136,7 +143,10 @@
 
         </nav>
 
-        <!-- IDENTITAS DAN LOGOUT -->
+        <!-- =====================================
+             IDENTITAS DAN LOGOUT
+        ===================================== -->
+
         <div class="hidden shrink-0 items-center gap-3 xl:flex">
 
             <span
@@ -167,7 +177,10 @@
 
         </div>
 
-        <!-- MENU MOBILE -->
+        <!-- =====================================
+             MENU MOBILE
+        ===================================== -->
+
         <details class="relative xl:hidden">
 
             <summary

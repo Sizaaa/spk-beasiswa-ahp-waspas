@@ -11,11 +11,60 @@
 
 <header class="bc-auth-topbar">
     <div class="bc-auth-topbar-inner">
+
+        <!-- LOGO WEBSITE -->
         <a
             href="{{ route('beranda') }}"
             class="bc-auth-brand"
+            style="display: inline-flex; align-items: center; gap: 10px;"
         >
-            ✦ Beasiswa Cerdas
+            <svg
+                xmlns="http://www.w3.org/2000/svg"
+                viewBox="0 0 24 24"
+                fill="none"
+                width="32"
+                height="32"
+                style="flex-shrink: 0;"
+                aria-hidden="true"
+            >
+                <path
+                    d="M4.5 5.5H6c2.33 0 4.17.47 6 1.9c1.83-1.43 3.67-1.9 6-1.9h1.5v11.2H18c-2.2 0-4 .35-6 1.8c-2-1.45-3.8-1.8-6-1.8H4.5V5.5Z"
+                    stroke="#264F73"
+                    stroke-width="1.8"
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                />
+                <path
+                    d="M12 7.4V18.5"
+                    stroke="#264F73"
+                    stroke-width="1.8"
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                />
+                <path
+                    d="M9.1 11.3l2.1 2.1l4-4.4"
+                    stroke="#264F73"
+                    stroke-width="1.8"
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                />
+                <path
+                    d="M3.7 7.2H4.5V17.7H6"
+                    stroke="#264F73"
+                    stroke-width="1.8"
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                />
+                <path
+                    d="M20.3 7.2H19.5V17.7H18"
+                    stroke="#264F73"
+                    stroke-width="1.8"
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                />
+            </svg>
+
+            <span>Beasiswa Cerdas</span>
         </a>
 
         <a
@@ -36,7 +85,7 @@
 
             <div>
                 <p class="bc-auth-kicker">
-                    ✦ SISTEM BEASISWA CERDAS
+                    SISTEM BEASISWA CERDAS
                 </p>
 
                 <h1 class="bc-auth-side-title">
@@ -111,8 +160,53 @@
             aria-labelledby="judul-login"
         >
 
+            <!-- LOGO BUKU PADA FORM LOGIN -->
             <div class="bc-auth-logo" aria-hidden="true">
-                BC
+
+                <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    width="36"
+                    height="36"
+                >
+                    <path
+                        d="M4.5 5.5H6c2.33 0 4.17.47 6 1.9c1.83-1.43 3.67-1.9 6-1.9h1.5v11.2H18c-2.2 0-4 .35-6 1.8c-2-1.45-3.8-1.8-6-1.8H4.5V5.5Z"
+                        stroke="#264F73"
+                        stroke-width="1.8"
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
+                    />
+                    <path
+                        d="M12 7.4V18.5"
+                        stroke="#264F73"
+                        stroke-width="1.8"
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
+                    />
+                    <path
+                        d="M9.1 11.3l2.1 2.1l4-4.4"
+                        stroke="#264F73"
+                        stroke-width="1.8"
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
+                    />
+                    <path
+                        d="M3.7 7.2H4.5V17.7H6"
+                        stroke="#264F73"
+                        stroke-width="1.8"
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
+                    />
+                    <path
+                        d="M20.3 7.2H19.5V17.7H18"
+                        stroke="#264F73"
+                        stroke-width="1.8"
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
+                    />
+                </svg>
+
             </div>
 
             <h2

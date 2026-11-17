@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html lang="id">
 
@@ -42,7 +41,6 @@
         /* ========================================
            SCROLLBAR SIDEBAR
         ======================================== */
-
         .bc-admin-sidebar {
             scrollbar-width: thin;
             scrollbar-color: #5e8b7f transparent;
@@ -58,9 +56,47 @@
         }
 
         /* ========================================
+           BRAND HEADER ADMIN
+        ======================================== */
+        .bc-admin-brand-wrap {
+            background: #ffffff;
+            border-bottom: 1px solid #dfe8e4;
+            padding: 22px 20px 18px;
+        }
+
+        .bc-admin-brand-link {
+            display: inline-flex;
+            align-items: flex-start;
+            gap: 12px;
+            text-decoration: none;
+        }
+
+        .bc-admin-brand-logo {
+            flex-shrink: 0;
+            width: 36px;
+            height: 36px;
+            margin-top: 2px;
+        }
+
+        .bc-admin-brand-title {
+            color: #105447;
+            font-size: 18px;
+            line-height: 1.2;
+            font-weight: 800;
+            margin: 0;
+        }
+
+        .bc-admin-brand-subtitle {
+            margin-top: 4px;
+            color: #64748b;
+            font-size: 12px;
+            line-height: 1.4;
+            font-weight: 500;
+        }
+
+        /* ========================================
            NAVIGASI ADMIN
         ======================================== */
-
         .bc-admin-nav {
             display: flex;
             align-items: center;
@@ -95,7 +131,6 @@
         /* ========================================
            KONTEN UTAMA
         ======================================== */
-
         .bc-admin-main {
             width: 100%;
             max-width: 1400px;
@@ -133,7 +168,6 @@
         /* ========================================
            KARTU STATISTIK
         ======================================== */
-
         .bc-stats {
             display: grid;
             grid-template-columns: repeat(4, minmax(0, 1fr));
@@ -218,7 +252,6 @@
         /* ========================================
            PANEL HALAMAN
         ======================================== */
-
         .bc-panel {
             min-width: 0;
             overflow: hidden;
@@ -259,7 +292,6 @@
         /* ========================================
            TABEL
         ======================================== */
-
         .bc-table-scroll {
             width: 100%;
             overflow-x: auto;
@@ -322,7 +354,6 @@
         /* ========================================
            BADGE STATUS
         ======================================== */
-
         .bc-status {
             display: inline-flex;
             align-items: center;
@@ -367,7 +398,6 @@
         /* ========================================
            TOMBOL
         ======================================== */
-
         .bc-btn {
             display: inline-flex;
             align-items: center;
@@ -424,7 +454,6 @@
         /* ========================================
            FORM INPUT
         ======================================== */
-
         .bc-form-control {
             min-height: 42px;
             border: 1px solid #d4e1df;
@@ -444,7 +473,6 @@
         /* ========================================
            STATISTIK KECIL
         ======================================== */
-
         .bc-mini-grid {
             display: grid;
             grid-template-columns: repeat(3, minmax(0, 1fr));
@@ -473,7 +501,6 @@
         /* ========================================
            DETAIL PENDAFTAR
         ======================================== */
-
         .bc-detail-grid {
             display: grid;
             grid-template-columns: repeat(2, minmax(0, 1fr));
@@ -525,7 +552,6 @@
         /* ========================================
            RESPONSIF
         ======================================== */
-
         @media (max-width: 1199px) {
             .bc-stats {
                 grid-template-columns: repeat(2, minmax(0, 1fr));
@@ -564,6 +590,14 @@
 
             .bc-detail-grid {
                 grid-template-columns: 1fr;
+            }
+
+            .bc-admin-brand-wrap {
+                padding: 20px 16px 16px;
+            }
+
+            .bc-admin-brand-title {
+                font-size: 17px;
             }
         }
 
@@ -645,19 +679,13 @@
 
 <div class="min-h-screen md:flex">
 
-    <!-- ========================================
-         OVERLAY SIDEBAR MOBILE
-    ======================================== -->
-
+    <!-- OVERLAY SIDEBAR MOBILE -->
     <div
         id="adminOverlay"
         class="fixed inset-0 z-40 hidden bg-slate-950/55 md:hidden"
     ></div>
 
-    <!-- ========================================
-         SIDEBAR ADMIN
-    ======================================== -->
-
+    <!-- SIDEBAR ADMIN -->
     <aside
         id="adminSidebar"
         aria-label="Sidebar administrator"
@@ -671,45 +699,85 @@
     >
         <div class="flex min-h-full flex-col">
 
-            <!-- LOGO -->
-
-            <div
-                class="flex items-start justify-between
-                       gap-3 border-b border-white/10
-                       px-5 py-6"
-            >
-                <div>
+            <!-- HEADER BRAND ADMIN -->
+            <div class="bc-admin-brand-wrap">
+                <div class="flex items-start justify-between gap-3">
                     <a
                         href="{{ route('admin.dashboard') }}"
-                        class="text-lg font-extrabold text-white"
+                        class="bc-admin-brand-link"
                     >
-                        ✦ Beasiswa Cerdas
+                        <svg
+                            xmlns="http://www.w3.org/2000/svg"
+                            viewBox="0 0 24 24"
+                            fill="none"
+                            class="bc-admin-brand-logo"
+                            aria-hidden="true"
+                        >
+                            <path
+                                d="M4.5 5.5H6c2.33 0 4.17.47 6 1.9c1.83-1.43 3.67-1.9 6-1.9h1.5v11.2H18c-2.2 0-4 .35-6 1.8c-2-1.45-3.8-1.8-6-1.8H4.5V5.5Z"
+                                stroke="#264F73"
+                                stroke-width="1.8"
+                                stroke-linecap="round"
+                                stroke-linejoin="round"
+                            />
+                            <path
+                                d="M12 7.4V18.5"
+                                stroke="#264F73"
+                                stroke-width="1.8"
+                                stroke-linecap="round"
+                                stroke-linejoin="round"
+                            />
+                            <path
+                                d="M9.1 11.3l2.1 2.1l4-4.4"
+                                stroke="#264F73"
+                                stroke-width="1.8"
+                                stroke-linecap="round"
+                                stroke-linejoin="round"
+                            />
+                            <path
+                                d="M3.7 7.2H4.5V17.7H6"
+                                stroke="#264F73"
+                                stroke-width="1.8"
+                                stroke-linecap="round"
+                                stroke-linejoin="round"
+                            />
+                            <path
+                                d="M20.3 7.2H19.5V17.7H18"
+                                stroke="#264F73"
+                                stroke-width="1.8"
+                                stroke-linecap="round"
+                                stroke-linejoin="round"
+                            />
+                        </svg>
+
+                        <div>
+                            <p class="bc-admin-brand-title">
+                                Beasiswa Cerdas
+                            </p>
+
+                            <p class="bc-admin-brand-subtitle">
+                                Layanan Beasiswa
+                            </p>
+                        </div>
                     </a>
 
-                    <p class="mt-2 text-xs text-emerald-200">
-                        Administrasi Beasiswa
-                    </p>
+                    <button
+                        id="adminSidebarClose"
+                        type="button"
+                        aria-label="Tutup sidebar"
+                        class="rounded-lg p-2 text-xl text-slate-600
+                               hover:bg-slate-100 md:hidden"
+                    >
+                        ✕
+                    </button>
                 </div>
-
-                <button
-                    id="adminSidebarClose"
-                    type="button"
-                    aria-label="Tutup sidebar"
-                    class="rounded-lg p-2 text-xl text-white
-                           hover:bg-white/10 md:hidden"
-                >
-                    ✕
-                </button>
             </div>
 
-            <!-- NAVIGASI -->
-
+            <!-- NAVIGASI ADMIN -->
             <nav
                 aria-label="Navigasi Admin"
                 class="space-y-1 px-3 py-5"
             >
-
-                <!-- DASHBOARD -->
 
                 <a
                     href="{{ route('admin.dashboard') }}"
@@ -718,17 +786,9 @@
                         aria-current="page"
                     @endif
                 >
-                    <span
-                        class="bc-admin-nav-icon"
-                        aria-hidden="true"
-                    >
-                        ▦
-                    </span>
-
+                    <span class="bc-admin-nav-icon" aria-hidden="true">▦</span>
                     <span>Dashboard Admin</span>
                 </a>
-
-                <!-- VERIFIKASI -->
 
                 <a
                     href="{{ route('admin.verifikasi.index') }}"
@@ -737,16 +797,8 @@
                         aria-current="page"
                     @endif
                 >
-                    <span
-                        class="bc-admin-nav-icon"
-                        aria-hidden="true"
-                    >
-                        ☑
-                    </span>
-
-                    <span class="flex-1">
-                        Verifikasi Pengajuan
-                    </span>
+                    <span class="bc-admin-nav-icon" aria-hidden="true">☑</span>
+                    <span class="flex-1">Verifikasi Pengajuan</span>
 
                     @if ($jumlahMenunggu > 0)
                         <span
@@ -759,8 +811,6 @@
                     @endif
                 </a>
 
-                <!-- DATA CALON PENERIMA -->
-
                 <a
                     href="{{ route('admin.calon-penerima.index') }}"
                     class="bc-admin-nav text-emerald-100"
@@ -768,19 +818,11 @@
                         aria-current="page"
                     @endif
                 >
-                    <span
-                        class="bc-admin-nav-icon"
-                        aria-hidden="true"
-                    >
-                        ♙
-                    </span>
-
+                    <span class="bc-admin-nav-icon" aria-hidden="true">♙</span>
                     <span>Data Calon Penerima</span>
                 </a>
 
                 <div class="my-4 border-t border-white/10"></div>
-
-                <!-- PERHITUNGAN AHP, WASPAS, HASIL, LAPORAN -->
 
                 @foreach ($menuPerhitungan as $menu)
                     <a
@@ -790,55 +832,34 @@
                             aria-current="page"
                         @endif
                     >
-                        <span
-                            class="bc-admin-nav-icon"
-                            aria-hidden="true"
-                        >
+                        <span class="bc-admin-nav-icon" aria-hidden="true">
                             {{ $menu['ikon'] }}
                         </span>
-
                         <span>{{ $menu['nama'] }}</span>
                     </a>
                 @endforeach
 
                 <div class="my-4 border-t border-white/10"></div>
 
-                <!-- BERANDA PUBLIK -->
-
                 <a
                     href="{{ route('beranda') }}"
                     class="bc-admin-nav text-emerald-100"
                 >
-                    <span
-                        class="bc-admin-nav-icon"
-                        aria-hidden="true"
-                    >
-                        ⌂
-                    </span>
-
+                    <span class="bc-admin-nav-icon" aria-hidden="true">⌂</span>
                     <span>Lihat Beranda Publik</span>
                 </a>
-
-                <!-- LOGOUT -->
 
                 <form
                     action="{{ route('logout') }}"
                     method="POST"
                 >
                     @csrf
-
                     <button
                         type="submit"
                         class="bc-admin-nav w-full text-left
                                text-red-200 hover:bg-white/10"
                     >
-                        <span
-                            class="bc-admin-nav-icon"
-                            aria-hidden="true"
-                        >
-                            ↪
-                        </span>
-
+                        <span class="bc-admin-nav-icon" aria-hidden="true">↪</span>
                         <span>Logout</span>
                     </button>
                 </form>
@@ -846,7 +867,6 @@
             </nav>
 
             <!-- FOOTER SIDEBAR -->
-
             <footer
                 class="mt-auto px-5 pb-7 pt-5"
                 aria-label="Identitas kelompok pengembang"
@@ -876,15 +896,8 @@
         </div>
     </aside>
 
-    <!-- ========================================
-         KONTEN KANAN ADMIN
-    ======================================== -->
-
+    <!-- KONTEN KANAN ADMIN -->
     <div class="min-w-0 flex-1">
-
-        <!-- ====================================
-             HEADER ADMIN SERAGAM
-        ==================================== -->
 
         <header
             class="sticky top-0 z-30 w-full
@@ -899,8 +912,6 @@
                        items-center justify-between
                        gap-4 lg:flex-nowrap"
             >
-
-                <!-- JUDUL HALAMAN -->
 
                 <div
                     class="flex min-w-0 flex-1
@@ -921,7 +932,6 @@
                     </button>
 
                     <div class="min-w-0 flex-1">
-
                         <p
                             class="text-[11px] font-bold
                                    uppercase tracking-widest
@@ -947,11 +957,8 @@
                                 'Pengelolaan sistem beasiswa.'
                             )
                         </p>
-
                     </div>
                 </div>
-
-                <!-- PROFIL ADMIN -->
 
                 <div class="flex shrink-0 items-center gap-3">
 
@@ -965,7 +972,6 @@
                     </div>
 
                     <div class="min-w-0">
-
                         <p
                             class="max-w-36 truncate
                                    text-sm font-bold text-slate-800"
@@ -976,24 +982,17 @@
                         <p class="text-xs text-slate-500">
                             Administrator
                         </p>
-
                     </div>
                 </div>
 
             </div>
         </header>
 
-        <!-- KONTEN HALAMAN ADMIN -->
-
         @yield('admin-content')
 
     </div>
 
 </div>
-
-<!-- ========================================
-     JAVASCRIPT SIDEBAR ADMIN
-======================================== -->
 
 <script>
 document.addEventListener('DOMContentLoaded', function () {
@@ -1011,15 +1010,9 @@ document.addEventListener('DOMContentLoaded', function () {
         sidebar.classList.toggle('translate-x-0', isOpen);
         overlay.classList.toggle('hidden', !isOpen);
 
-        open.setAttribute(
-            'aria-expanded',
-            String(isOpen)
-        );
+        open.setAttribute('aria-expanded', String(isOpen));
 
-        document.body.classList.toggle(
-            'overflow-hidden',
-            isOpen
-        );
+        document.body.classList.toggle('overflow-hidden', isOpen);
     }
 
     open.addEventListener('click', function () {

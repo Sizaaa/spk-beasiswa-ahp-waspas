@@ -4,8 +4,11 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="author" content="Kelompok 4 - Universitas Pamulang">
+    <meta name="author" content="Kelompok 4 Peneliti">
     <title>@yield('title', 'Administrasi Beasiswa - Beasiswa Cerdas')</title>
+
+    <!-- Browser Favicon -->
+    <link rel="icon" type="image/svg+xml" href="{{ asset('favicon.svg') }}">
 
     <!-- Google Fonts: Plus Jakarta Sans -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -283,18 +286,11 @@
         <!-- BRAND LOGO & SYSTEM IDENTIFIER -->
         <div class="flex items-center justify-between border-b border-white/10 px-6 py-5 shrink-0">
             <a href="{{ route('admin.dashboard') }}" class="flex items-center gap-3 group">
-                <div class="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-gradient-to-br from-[#20A67A] to-[#116759] shadow-lg shadow-[#20A67A]/25 border border-white/20">
-                    <span class="text-white text-lg font-extrabold">✦</span>
-                </div>
-                <div>
-                    <span class="text-base font-extrabold tracking-tight text-white block leading-tight">
-                        Beasiswa Cerdas
-                    </span>
-                    <span class="inline-flex items-center gap-1.5 mt-0.5 text-[11px] font-semibold text-emerald-300">
-                        <span class="w-1.5 h-1.5 rounded-full bg-[#20A67A]"></span>
-                        SPK AHP–WASPAS
-                    </span>
-                </div>
+                @include('partials.app-logo', [
+                    'theme' => 'dark',
+                    'subtext' => 'SPK AHP–WASPAS',
+                    'class' => 'h-10 w-10',
+                ])
             </a>
 
             <button
@@ -479,14 +475,16 @@
         </nav>
 
         <!-- FOOTER SIDEBAR -->
-        <div class="mt-auto border-t border-white/10 p-4 shrink-0 bg-black/10">
-            <div class="flex items-center gap-3">
-                <div class="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg bg-white/10 font-bold text-xs text-emerald-200">
-                    K4
+        <div class="mt-auto border-t border-white/10 p-4 shrink-0 bg-black/20">
+            <div class="space-y-1.5">
+                <div class="flex items-center justify-between">
+                    <p class="text-[11px] font-bold text-blue-300 uppercase tracking-wider">Kelompok 4 Peneliti</p>
+                    <span class="text-[10px] font-bold px-1.5 py-0.5 rounded bg-blue-500/20 text-blue-200">AHP·WASPAS</span>
                 </div>
-                <div class="min-w-0 flex-1">
-                    <p class="text-xs font-bold text-white truncate">Kelompok 4</p>
-                    <p class="text-[11px] text-emerald-300/80 truncate">Universitas Pamulang</p>
+                <div class="space-y-0.5 text-[11px] text-slate-300">
+                    <p class="truncate font-medium">Bagas Dwi P. <span class="text-blue-300/80 font-mono text-[10px]">(241011402570)</span></p>
+                    <p class="truncate font-medium">Muhammad Azis <span class="text-blue-300/80 font-mono text-[10px]">(241011400392)</span></p>
+                    <p class="truncate font-medium">M. Asyhadullah <span class="text-blue-300/80 font-mono text-[10px]">(241011402474)</span></p>
                 </div>
             </div>
         </div>

@@ -484,13 +484,13 @@
                 class="mt-5 text-xs text-slate-600"
             >
 
-                Dibuat oleh Kelompok 4 —
+                Dibuat oleh Kelompok 4 Peneliti —
 
-                Bagas Dwi Prasojo
+                Bagas Dwi Prasojo (241011402570)
 
-                · Muhammad Azis
+                · Muhammad Azis (241011400392)
 
-                · Muhammad Asyhadullah
+                · Muhammad Asyhadullah (241011402474)
 
             </p>
 

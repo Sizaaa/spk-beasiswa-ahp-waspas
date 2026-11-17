@@ -1,0 +1,10 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 48 48" fill="none">
+  <!-- Modern Institutional Emblem Varian 2: Dual Matrix Hexagon -->
+  <rect width="48" height="48" rx="12" fill="#0F1E36"/>
+  <!-- Hexagonal Gate Frame -->
+  <path d="M24 7L38 15V33L24 41L10 33V15L24 7Z" stroke="#2563EB" stroke-width="2.5" fill="none"/>
+  <!-- Upper Diamond (AHP Weighting Criteria) -->
+  <path d="M24 12L31 20L24 28L17 20L24 12Z" fill="#38BDF8"/>
+  <!-- Lower Solid Foundation (WASPAS Preference Matrix) -->
+  <path d="M24 24L32 33H16L24 24Z" fill="#FFFFFF"/>
+</svg>

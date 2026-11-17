@@ -28,7 +28,11 @@
             href="{{ route('beranda') }}"
             class="bc-auth-brand"
         >
-            ✦ Beasiswa Cerdas
+            @include('partials.app-logo', [
+                'theme' => 'light',
+                'subtext' => 'Pemulihan Kata Sandi',
+                'class' => 'h-9 w-9',
+            ])
         </a>
 
         <a
@@ -49,7 +53,7 @@
 
             <div>
                 <p class="bc-auth-kicker">
-                    ✦ PORTAL BEASISWA CERDAS
+                    PORTAL BEASISWA CERDAS
                 </p>
 
                 <h2 class="bc-auth-side-title">
@@ -132,8 +136,7 @@
             </div>
 
             <p class="bc-auth-side-footer">
-                Beasiswa Cerdas · Kelompok 4
-                · Universitas Pamulang
+                Kelompok 4 Peneliti · Bagas · Azis · Asyhadullah
             </p>
 
         </aside>
@@ -142,8 +145,15 @@
 
         <section class="bc-auth-content">
 
-            <div class="bc-auth-logo" aria-hidden="true">
-                BC
+            <div class="bc-auth-logo !bg-transparent !p-0 !border-0 flex items-center justify-center mb-3" aria-hidden="true">
+                <svg viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg" class="w-12 h-12 shadow-sm rounded-xl">
+                    <rect width="48" height="48" rx="12" fill="#0F1E36"/>
+                    <rect x="0.75" y="0.75" width="46.5" height="46.5" rx="11.25" stroke="#1E293B" stroke-width="1.5"/>
+                    <path d="M10 21L19 14.5V36H10V21Z" fill="#2563EB"/>
+                    <path d="M29 14.5L38 21V36H29V14.5Z" fill="#1D4ED8"/>
+                    <path d="M24 8L32.5 21H27V39H21V21H15.5L24 8Z" fill="#FFFFFF"/>
+                    <circle cx="24" cy="27" r="2" fill="#0F1E36"/>
+                </svg>
             </div>
 
             <p class="bc-auth-eyebrow">

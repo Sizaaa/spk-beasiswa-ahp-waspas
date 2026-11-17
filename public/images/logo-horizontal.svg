@@ -1,0 +1,13 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 260 52" fill="none">
+  <!-- Icon Mark (44x44) -->
+  <g transform="translate(4, 4)">
+    <rect width="44" height="44" rx="10" fill="#0F1E36"/>
+    <path d="M9 19.5L17.5 13.5V33H9V19.5Z" fill="#2563EB"/>
+    <path d="M26.5 13.5L35 19.5V33H26.5V13.5Z" fill="#1D4ED8"/>
+    <path d="M22 7.5L29.5 19.5H24.5V36H19.5V19.5H14.5L22 7.5Z" fill="#FFFFFF"/>
+    <circle cx="22" cy="25" r="1.8" fill="#0F1E36"/>
+  </g>
+  <!-- Institutional Wordmark -->
+  <text x="58" y="26" font-family="'Plus Jakarta Sans', system-ui, -apple-system, sans-serif" font-size="16" font-weight="800" fill="#0F1E36" letter-spacing="-0.03em">Beasiswa Cerdas</text>
+  <text x="58" y="40" font-family="'Plus Jakarta Sans', system-ui, -apple-system, sans-serif" font-size="9" font-weight="700" fill="#2563EB" letter-spacing="0.08em">SPK SELEKSI · AHP–WASPAS</text>
+</svg>

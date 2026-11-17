@@ -1,0 +1,11 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 48 48" fill="none">
+  <!-- Modern Institutional Emblem Varian 1 -->
+  <rect width="48" height="48" rx="12" fill="#0F1E36"/>
+  <!-- Left Pillar (Kriteria & Pondasi Integritas) -->
+  <path d="M10 21L19 14.5V36H10V21Z" fill="#2563EB"/>
+  <!-- Right Pillar (Keseimbangan Evaluasi Objektif) -->
+  <path d="M29 14.5L38 21V36H29V14.5Z" fill="#1D4ED8"/>
+  <!-- Central Keystone / Delta (Prestasi & Seleksi Keputusan) -->
+  <path d="M24 8L32.5 21H27V39H21V21H15.5L24 8Z" fill="#FFFFFF"/>
+  <circle cx="24" cy="27" r="2" fill="#0F1E36"/>
+</svg>

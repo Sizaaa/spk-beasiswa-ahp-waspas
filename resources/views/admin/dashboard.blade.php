@@ -329,6 +329,132 @@
 
     </section>
 
+    <!-- PANEL INFORMASI SISTEM & IDENTITAS PENGEMBANG (KELOMPOK 4 PENELITI) -->
+    <section class="bc-panel" aria-labelledby="judul-tentang-sistem">
+        <div class="bc-panel-header bg-gradient-to-r from-[#0F1E36] to-[#1E293B] text-white !border-slate-800">
+            <div class="flex items-center gap-3">
+                <div class="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-blue-600/30 border border-blue-400/40 text-blue-300">
+                    <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                    </svg>
+                </div>
+                <div>
+                    <h2 id="judul-tentang-sistem" class="text-base font-extrabold text-white tracking-tight">
+                        Tentang Sistem & Identitas Pengembang
+                    </h2>
+                    <p class="text-xs text-slate-300">
+                        Informasi akademik, tujuan implementasi SPK, dan profil tim pengembang sistem.
+                    </p>
+                </div>
+            </div>
+            <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-blue-500/20 text-blue-200 border border-blue-400/30 text-xs font-bold">
+                SPK Beasiswa Cerdas
+            </span>
+        </div>
+
+        <div class="bc-panel-body p-6 grid grid-cols-1 lg:grid-cols-12 gap-6 bg-white">
+            <!-- Sisi Kiri: Informasi Sistem & Metode -->
+            <div class="lg:col-span-7 space-y-4 pr-0 lg:pr-4 border-b lg:border-b-0 lg:border-r border-slate-100 pb-5 lg:pb-0">
+                <div>
+                    <span class="text-[11px] font-bold uppercase tracking-wider text-blue-600 block mb-1">
+                        Informasi Sistem
+                    </span>
+                    <h3 class="text-lg font-extrabold text-[#0F1E36]">
+                        Sistem Pendukung Keputusan Beasiswa
+                    </h3>
+                    <p class="text-xs text-[#64746D] leading-relaxed mt-1.5">
+                        <strong>Tujuan:</strong> Membantu proses penilaian dan pemeringkatan kelayakan penerima beasiswa kurang mampu secara transparan, objektif, dan terstruktur berbasis komputasi multikriteria.
+                    </p>
+                </div>
+
+                <div class="pt-2">
+                    <span class="text-[11px] font-bold uppercase tracking-wider text-[#64746D] block mb-2">
+                        Metode yang Digunakan
+                    </span>
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                        <div class="p-3.5 rounded-xl bg-slate-50 border border-slate-200/80">
+                            <div class="flex items-center gap-2">
+                                <span class="px-2 py-0.5 rounded bg-blue-100 text-blue-800 text-[10px] font-extrabold">AHP</span>
+                                <span class="text-xs font-bold text-slate-800">Analytical Hierarchy Process</span>
+                            </div>
+                            <p class="text-[11px] text-slate-500 mt-1.5 leading-relaxed">
+                                Menentukan bobot prioritas tingkat kepentingan kriteria (C1–C5) melalui perbandingan berpasangan dengan rasio konsistensi (CR ≤ 0.10).
+                            </p>
+                        </div>
+                        <div class="p-3.5 rounded-xl bg-slate-50 border border-slate-200/80">
+                            <div class="flex items-center gap-2">
+                                <span class="px-2 py-0.5 rounded bg-emerald-100 text-emerald-800 text-[10px] font-extrabold">WASPAS</span>
+                                <span class="text-xs font-bold text-slate-800">Weighted Aggregated Sum Product Assessment</span>
+                            </div>
+                            <p class="text-[11px] text-slate-500 mt-1.5 leading-relaxed">
+                                Menggabungkan model WSM dan WPM (λ = 0,5) untuk menghasilkan nilai preferensi gabungan (Qi) dan perankingan rekomendasi calon penerima.
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Sisi Kanan: Dikembangkan Oleh (Kelompok 4 Peneliti) -->
+            <div class="lg:col-span-5 space-y-4">
+                <div>
+                    <div class="flex items-center justify-between">
+                        <span class="text-[11px] font-bold uppercase tracking-wider text-blue-600">
+                            Informasi Pengembang
+                        </span>
+                        <span class="text-[11px] font-bold text-slate-400">
+                            Teknik Informatika
+                        </span>
+                    </div>
+                    <h3 class="text-sm font-extrabold text-[#0F1E36] mt-0.5">
+                        Kelompok 4 Peneliti
+                    </h3>
+                </div>
+
+                <div class="space-y-2.5">
+                    <div class="flex items-center justify-between p-3 rounded-xl bg-slate-50 border border-slate-200/70 hover:border-blue-200 transition">
+                        <div class="flex items-center gap-3">
+                            <div class="flex h-8 w-8 items-center justify-center rounded-lg bg-blue-600 text-white text-xs font-bold">
+                                1
+                            </div>
+                            <span class="text-xs font-bold text-slate-800">Bagas Dwi Prasojo</span>
+                        </div>
+                        <span class="font-mono text-xs font-bold text-blue-700 bg-blue-50 px-2 py-0.5 rounded border border-blue-100">
+                            241011402570
+                        </span>
+                    </div>
+
+                    <div class="flex items-center justify-between p-3 rounded-xl bg-slate-50 border border-slate-200/70 hover:border-blue-200 transition">
+                        <div class="flex items-center gap-3">
+                            <div class="flex h-8 w-8 items-center justify-center rounded-lg bg-blue-600 text-white text-xs font-bold">
+                                2
+                            </div>
+                            <span class="text-xs font-bold text-slate-800">Muhammad Azis</span>
+                        </div>
+                        <span class="font-mono text-xs font-bold text-blue-700 bg-blue-50 px-2 py-0.5 rounded border border-blue-100">
+                            241011400392
+                        </span>
+                    </div>
+
+                    <div class="flex items-center justify-between p-3 rounded-xl bg-slate-50 border border-slate-200/70 hover:border-blue-200 transition">
+                        <div class="flex items-center gap-3">
+                            <div class="flex h-8 w-8 items-center justify-center rounded-lg bg-blue-600 text-white text-xs font-bold">
+                                3
+                            </div>
+                            <span class="text-xs font-bold text-slate-800">Muhammad Asyhadullah</span>
+                        </div>
+                        <span class="font-mono text-xs font-bold text-blue-700 bg-blue-50 px-2 py-0.5 rounded border border-blue-100">
+                            241011402474
+                        </span>
+                    </div>
+                </div>
+
+                <div class="pt-1 text-[11px] text-slate-400 text-right">
+                    <span>Universitas Pamulang · Tahun Akademik 2026/2027</span>
+                </div>
+            </div>
+        </div>
+    </section>
+
 </main>
 
 @endsection

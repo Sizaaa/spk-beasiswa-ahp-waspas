@@ -479,8 +479,8 @@
 
                 <p class="mt-4 text-xs text-slate-600">
 
-                    Kelompok 4 · Bagas Dwi Prasojo ·
-                    Muhammad Azis · Muhammad Asyhadullah
+                    Kelompok 4 Peneliti · Bagas Dwi Prasojo (241011402570) ·
+                    Muhammad Azis (241011400392) · Muhammad Asyhadullah (241011402474)
 
                 </p>
 

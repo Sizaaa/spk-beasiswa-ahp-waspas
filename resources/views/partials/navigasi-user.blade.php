@@ -37,17 +37,11 @@
 
         <!-- BRAND LOGO -->
         <a href="{{ route('user.dashboard') }}" class="flex items-center gap-3 shrink-0 group">
-            <div class="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-gradient-to-br from-[#103F36] to-[#20A67A] text-white shadow-md shadow-[#20A67A]/20">
-                <span class="text-base font-extrabold">✦</span>
-            </div>
-            <div>
-                <span class="text-base font-extrabold tracking-tight text-[#103F36] block leading-tight group-hover:text-[#116759] transition">
-                    Beasiswa Cerdas
-                </span>
-                <span class="text-[11px] font-semibold text-[#64746D] block">
-                    Portal Pendaftar Beasiswa
-                </span>
-            </div>
+            @include('partials.app-logo', [
+                'theme' => 'light',
+                'subtext' => 'Portal Pendaftar Beasiswa',
+                'class' => 'h-10 w-10',
+            ])
         </a>
 
         <!-- MENU DESKTOP -->

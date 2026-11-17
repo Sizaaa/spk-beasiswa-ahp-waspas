@@ -1,0 +1,9 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32" fill="none">
+  <rect width="32" height="32" rx="8" fill="#0F1E36"/>
+  <!-- Left Foundation Pillar -->
+  <path d="M7 14.5L13 10V24H7V14.5Z" fill="#2563EB"/>
+  <!-- Right Foundation Pillar -->
+  <path d="M19 10L25 14.5V24H19V10Z" fill="#2563EB"/>
+  <!-- Center Ascending Keystone (Merit & Advancement) -->
+  <path d="M16 6L21.5 15H18V26H14V15H10.5L16 6Z" fill="#FFFFFF"/>
+</svg>
